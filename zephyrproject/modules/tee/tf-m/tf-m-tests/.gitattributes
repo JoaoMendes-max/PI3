@@ -1,0 +1,15 @@
+* text=auto
+
+# Explicitly declare text files to make sure possible local wrong config
+# of git does not override them on checkout
+*.patch text eol=lf
+
+# Text files that should be normalized
+*.c text
+*.h text
+*.txt text
+*.rst text
+
+# Binary files that should not be normalized
+*.a binary
+*.lib binary

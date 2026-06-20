@@ -1,0 +1,215 @@
+Flexible Software Package (FSP)
+###############################
+
+Origin:
+   Renesas Electronics Corporation
+   https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp
+
+Status:
+   version v6.2.0
+
+Purpose:
+   Flexible Software Package (FSP) for Renesas RA MCU Family.
+
+Description:
+   This package is a snapshot from the RA FSP software released by Renesas Electronics Corporation
+   It contain the HAL and a set of CMSIS headers files for the Renesas RA MCUs
+
+Dependencies:
+    None.
+
+URL:
+   https://github.com/renesas/fsp
+
+Commit:
+   ed247f90fb9bc390ebd36f1a0b7847b0ff44f322
+
+Maintained-by:
+   Renesas Electronics Corporation
+
+License:
+   BSD-3-Clause
+
+License Link:
+   https://opensource.org/licenses/BSD-3-Clause
+
+Patch List:
+
+   * Remove the DTC setting override in SCI B UART
+   Impacted files:
+      drivers/ra/fsp/src/r_sci_b_uart/r_sci_b_uart.c
+
+   * Remove the DTC setting override in SCI UART
+   Impacted files:
+      drivers/ra/fsp/src/r_sci_uart/r_sci_uart.c
+
+   * Add bug fix for CANFD setting wrong value of acepptance filtering rule number
+   Impacted files:
+      drivers/ra/fsp/src/r_canfd/r_canfd.c
+
+   * Remove the static definition in FLASH HP
+   Impacted files:
+      drivers/ra/fsp/src/r_flash_hp/r_flash_hp.c
+
+   * Change the section to place code in ram from `.ram_from_flash` to `.ramfunc`
+   Impacted files:
+      drivers/ra/fsp/inc/instances/r_flash_hp.h
+      drivers/ra/fsp/inc/instances/r_flash_lp.h
+      drivers/ra/fsp/inc/instances/r_mram.h
+
+   * Add SCB_CleanInvalidateDCache() for flash hp when using DCACHE
+   Impacted files:
+      drivers/ra/fsp/src/r_flash_hp/r_flash_hp.c
+
+   * Allows custom implementation of option setting memory
+   Impacted files:
+      drivers/ra/fsp/src/bsp/mcu/all/bsp_rom_registers.c
+
+   * Move the include for cmsis_compiler.h after include for Renesas CMSIS header file
+   Impacted files:
+      drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/renesas.h
+
+   * Remove the static definition in SDHI
+   Impacted files:
+      drivers/ra/fsp/src/r_sdhi/r_sdhi.c
+
+   * Add in ETHER_CFG_USE_CUSTOM_PHY_DRIVER to Ethernet controller driver to skip the phy control and allow the use of Zephyr phy driver.
+     Add phy link speed to Ethernet controller driver instance control.
+     Remove static definition of some internal function is ethernet driver to allow their usage in Zephyr side
+     Remove the phy target settings as they are not used.
+   Impacted files:
+      drivers/ra/fsp/src/r_ether/r_ether.c
+      drivers/ra/fsp/src/r_ether_phy/r_ether_phy.c
+      drivers/ra/fsp/src/r_ether_phy/targets/DP83620/r_ether_phy_target_dp83620.c
+      drivers/ra/fsp/src/r_ether_phy/targets/ICS1894/r_ether_phy_target_ics1894.c
+      drivers/ra/fsp/src/r_ether_phy/targets/KSZ8041/r_ether_phy_target_ksz8041.c
+      drivers/ra/fsp/src/r_ether_phy/targets/KSZ8091RNB/r_ether_phy_target_ksz8091rnb.c
+      drivers/ra/fsp/inc/instances/r_ether.h
+
+   * Remove const to allow changing the value at runtime for ``p_phy_lsi_cfg_list``
+   Impacted files:
+      drivers/ra/fsp/inc/instances/r_ether_phy.h
+
+   * Create new USB device support for Zephyr HAL (do not use current FSP USB stack)
+   Impacted files:
+      drivers/ra/fsp/inc/api/r_usb_device_api.h
+      drivers/ra/fsp/inc/instances/r_usb_device.h
+      drivers/ra/fsp/src/r_usb_device/r_usb_device_define.h
+      drivers/ra/fsp/src/r_usb_device/r_usb_device.c
+
+   * Add new define for USB module in bsp_feature.h
+   Impacted files:
+      drivers/ra/fsp/src/bsp/mcu/**/bsp_feature.h
+
+   * Add new support for r_usb_host (not pull from FSP USB)
+   Impacted files:
+      drivers/ra/fsp/inc/api/r_usb_host_api.h
+      drivers/ra/fsp/inc/instances/r_usb_host.h
+      drivers/ra/fsp/src/bsp/mcu/**/bsp_feature.h
+      drivers/ra/fsp/src/r_usb_host/r_usb_host.c
+
+   * Modify BSP_PRV_IELS_ENUM to use CONCAT instead of "##"
+   Impacted files:
+      zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+
+   * Add Trigger NO_EDGE enum for comparator module
+   Impacted files:
+      drivers/ra/fsp/inc/api/r_comparator_api.h
+
+   * Reflect OFS setting for sdram from Zephyr device-tree value
+   Impacted files:
+      zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+
+   * Reflect OFS setting for WDT from Zephyr Kconfig value
+      Impacted files:
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_ofs_cfg.h
+
+   * Correct IO define for R_ELC_ELSEGR_Type on RA8M1, RA8D1, RA8T1
+      Impacted files:
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8M1AH.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8D1BH.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8T1AH.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8E1AF.h
+
+   * Keep OSPI_B at fsp 5.8.0 since it need big change for OSPI driver in zephyr
+      Impacted files:
+         drivers/ra/fsp/src/r_ospi_b/r_ospi_b.c
+         drivers/ra/fsp/inc/api/r_spi_flash_api.h
+         drivers/ra/fsp/inc/instances/r_ospi_b.h
+
+   * Remove redundant value in OSIS allocation
+      Impacted files:
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra2a1/bsp_mcu_ofs_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra2l1/bsp_mcu_ofs_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra4m1/bsp_mcu_ofs_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra4w1/bsp_mcu_ofs_cfg.h
+
+   * Add bsp_linker_info.h in portable
+      Impacted files:
+         zephyr/ra/portable/bsp_linker_info.h
+
+   * Modify to use ".noinit" instead of ".ram_noinit" for `BSP_SECTION_NOINIT` and `__NO_INIT`
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_compiler_support.h
+
+   * Define `BSP_PARTITION_FLASH_CPU1_S_START` in bsp_cfg.h
+      Impacted files:
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra8p1/bsp_cfg.h
+
+   * Update bsp_linker.c condition to check CONFIG_BOOTLOADER_MCUBOOT
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/ra8d2/bsp_linker.c
+         drivers/ra/fsp/src/bsp/mcu/ra8m2/bsp_linker.c
+         drivers/ra/fsp/src/bsp/mcu/ra8p1/bsp_linker.c
+         drivers/ra/fsp/src/bsp/mcu/ra8t2/bsp_linker.c
+
+   * Add some additional BSP configuration macros specific for Zephyr RTOS
+     To make current FSP HAL portable for Zephyr RTOS, some additional BSP configuration macros are added.
+     Some of these macros are used to reflect Zephyr configuration (Kconfig or device-tree) to FSP HAL layer.
+     Some other macros are used to enable/disable specific feature in FSP HAL layer to make it compatible with Zephyr RTOS.
+      Impacted files:
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Source/startup.c
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Source/system.c
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_irq.c
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_irq.h
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_sbrk.c
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_tfu.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_ofs_cfg.h
+
+   * Disable C-CACHE for RA8P1 CM33 core to avoid cache conhenrency issue with MRAM
+      Impacted file:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_common.h
+
+   * Add patch to skip IRQ enable/disable in r_sau_uart driver, Zephyr SAU UART driver will manage IRQ enable/disable
+      Impacted files:
+         zephyr/ra/ra_cfg/fsp_cfg/r_sau_uart_cfg.h
+         drivers/ra/fsp/src/r_sau_uart/r_sau_uart.c
+
+   * Remove the static definition in RMAC
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Add RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK to skip checking PHY link state in do-link process.
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Remove crictical section barrier for read function in RMAC
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Seperate broadcast storm filter reception settings in RMAC
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Add initial value to routing_number in layer3_switch driver to suppress compliler warning
+      Impacted files:
+         drivers/ra/fsp/src/r_layer3_switch/r_layer3_switch.c
+
+   * Add new define LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP to skip phy link setup in layer3 switch
+     driver since it is handled by Zephyr phy driver.
+      Impacted files:
+         drivers/ra/fsp/src/r_layer3_switch/r_layer3_switch.c
+         zephyr/ra/ra_cfg/fsp_cfg/r_layer3_switch_cfg.h

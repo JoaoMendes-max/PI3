@@ -1,0 +1,4 @@
+name: mldsa-native
+build:
+  cmake-ext: False
+  kconfig-ext: False

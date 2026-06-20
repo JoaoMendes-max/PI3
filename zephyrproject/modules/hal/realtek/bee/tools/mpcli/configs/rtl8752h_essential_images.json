@@ -1,0 +1,41 @@
+{
+    "mptoolconfig": {
+        "port": "",
+        "baud": "1000000",
+        "appimage": {
+            "relativepath": "../../../../zephyr/blobs/bee/rtl8752h/bin/single_bank",
+            "file": [
+                {
+                    "id": 0,
+                    "address": "0x00801000",
+                    "name": "configFile_2025.09.28.09-c56ff8be480e864851703087f3d661d3.bin",
+                    "enable": "1"
+                },
+                {
+                    "id": 0,
+                    "address": "0x00802000",
+                    "name": "OTAHeader_Bank0_1.0.0.1-b2dff20b37cc479bf054669db699e2e1.bin",
+                    "enable": "1"
+                },
+                {
+                    "id": 1,
+                    "address": "0x0080A000",
+                    "name": "BANK0_fsbl_MP_master_1.2.4.0_722f404-e67afdd707414f84601a5bf52b53c788.bin",
+                    "enable": "1"
+                },
+                {
+                    "id": 2,
+                    "address": "0x00803000",
+                    "name": "BANK0_Patch_MP_release_0.0.322.2_56a2dbcd-2ca079e00bca6b92dd2af96124332221.bin",
+                    "enable": "1"
+                },
+                {
+                    "id": 3,
+                    "address": "0x0080B000",
+                    "name": "bt_stack_patch_MP_master_0.0.145.0_ab89e0d5-982493ffb677098b7f324aef124f9554.bin",
+                    "enable": "1"
+                }
+            ]
+        }
+    }
+}

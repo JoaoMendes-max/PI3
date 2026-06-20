@@ -1,0 +1,170 @@
+# Copyright (c) 2026, Realtek Semiconductor Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+menu "realtek hal driver"
+rsource "adc/Kconfig"
+rsource "bluetooth/Kconfig"
+rsource "can/Kconfig"
+rsource "codec/Kconfig"
+rsource "dma/Kconfig"
+rsource "gpio/Kconfig"
+rsource "i2c/Kconfig"
+rsource "i2s/Kconfig"
+rsource "ir/Kconfig"
+rsource "keyscan/Kconfig"
+rsource "mac_802154/Kconfig"
+rsource "nvic/Kconfig"
+rsource "pinmux/Kconfig"
+rsource "qdec/Kconfig"
+rsource "rcc/Kconfig"
+rsource "rtc/Kconfig"
+rsource "sdhc/Kconfig"
+rsource "spi/Kconfig"
+rsource "tim/Kconfig"
+rsource "uart/Kconfig"
+rsource "usb/Kconfig"
+rsource "wdt/Kconfig"
+endmenu
+
+config REALTEK_BEE_USING_RTL876X_DRIVER
+	bool
+	default y
+	depends on SOC_SERIES_RTL8752H
+
+config WRAP_REALTEK_BEE_ADC
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_ADC
+	select REALTEK_BEE_ADC
+
+config WRAP_REALTEK_BEE_CAN
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_CAN
+	select REALTEK_BEE_CAN
+
+config WRAP_REALTEK_BEE_CODEC
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_CODEC
+	select REALTEK_BEE_CODEC
+
+config WRAP_REALTEK_BEE_DMA
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_DMA
+	select REALTEK_BEE_DMA
+
+config WRAP_REALTEK_BEE_GPIO
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_GPIO
+	select REALTEK_BEE_GPIO
+
+config WRAP_REALTEK_BEE_I2C
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_I2C
+	select REALTEK_BEE_I2C
+
+config WRAP_REALTEK_BEE_I2S
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_I2S
+	select REALTEK_BEE_I2S
+
+config WRAP_REALTEK_BEE_IR
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_IR
+	select REALTEK_BEE_IR
+
+config WRAP_REALTEK_BEE_KEYSCAN
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_KEYSCAN
+	select REALTEK_BEE_KEYSCAN
+
+config WRAP_REALTEK_BEE_NVIC
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_NVIC
+	select REALTEK_BEE_NVIC
+
+config WRAP_REALTEK_BEE_PINMUX
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_PINMUX
+	select REALTEK_BEE_PINMUX
+
+config WRAP_REALTEK_BEE_AON_QDEC
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_AON_QDEC
+	select REALTEK_BEE_AON_QDEC
+
+config WRAP_REALTEK_BEE_QDEC
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_QDEC
+	select REALTEK_BEE_QDEC
+
+config WRAP_REALTEK_BEE_RCC
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_RCC
+	select REALTEK_BEE_RCC
+
+config WRAP_REALTEK_BEE_RTC
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_RTC
+	select REALTEK_BEE_RTC
+
+config WRAP_REALTEK_BEE_SDHC
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_SDHC
+	select REALTEK_BEE_SDHC
+
+config WRAP_REALTEK_BEE_SPI
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_SPI
+	select REALTEK_BEE_SPI
+
+config WRAP_REALTEK_BEE_TIM
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_TIM
+	select REALTEK_BEE_TIM
+
+config WRAP_REALTEK_BEE_ENHTIM
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_ENHTIM
+	select REALTEK_BEE_ENHTIM
+
+config WRAP_REALTEK_BEE_UART
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_UART
+	select REALTEK_BEE_UART
+
+config WRAP_REALTEK_BEE_USB
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_USB
+	select REALTEK_BEE_USB
+
+config WRAP_REALTEK_BEE_AON_WDT
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_AON_WDT
+	select REALTEK_BEE_AON_WDT
+
+config WRAP_REALTEK_BEE_CORE_WDT
+	bool
+	default y
+	depends on HAL_REALTEK_BEE_CORE_WDT
+	select REALTEK_BEE_CORE_WDT

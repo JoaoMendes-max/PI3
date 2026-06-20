@@ -1,0 +1,17 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2023-2025, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+fetch_remote_library(
+    LIB_NAME                ethos_u_core_driver
+    LIB_SOURCE_PATH_VAR     ETHOS_DRIVER_PATH
+    LIB_PATCH_DIR           ${CMAKE_CURRENT_LIST_DIR}
+    FETCH_CONTENT_ARGS
+        GIT_REPOSITORY      "https://git.gitlab.arm.com/artificial-intelligence/ethos-u/ethos-u-core-driver.git"
+        GIT_TAG             "25.05"
+        GIT_SHALLOW         TRUE
+        GIT_PROGRESS        TRUE
+)

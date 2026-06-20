@@ -1,0 +1,47 @@
+{
+    "mptoolconfig": {
+        "port": "",
+        "baud": "1000000",
+        "appimage": {
+            "relativepath": "../../../../zephyr/blobs/bee/rtl87x2g/bin",
+            "file": [
+                {
+                    "id": 0,
+                    "address": "0x4001000",
+                    "name": "configFile_2025.09.02.14-e600f2d80e7f4ab3e6f089b6174ff6d7.bin",
+                    "enable": "1"
+                },
+                {
+                    "id": 1,
+                    "address": "0x4002000",
+                    "name": "BANK0_boot_patch_MP_release_1.0.183.27_e91dd4ad-dffb4c6d9a02fea1a24302c6e1a76fda.bin",
+                    "enable": "1"
+                },
+                {
+                    "id": 2,
+                    "address": "0x400a000",
+                    "name": "BANK1_boot_patch_MP_release_1.0.183.27_e91dd4ad-8a0390ad5ea191e414f1c00c6b4e366c.bin",
+                    "enable": "1"
+                },
+                {
+                    "id": 3,
+                    "address": "0x4012000",
+                    "name": "OTAHeader_Bank0_1.0.0.1-3e442e5fa761e6422f0b936bc5fb0c25.bin",
+                    "enable": "1"
+                },
+                {
+                    "id": 4,
+                    "address": "0x4013000",
+                    "name": "BANK0_sys_patch_MP_release_1.0.183.27_e91dd4ad-59b00aef9fefc715b8fb60de65a1ffe2.bin",
+                    "enable": "1"
+                },
+                {
+                    "id": 5,
+                    "address": "0x401b000",
+                    "name": "bt_stack_patch_MP_master_0.0.126.0_a075812a-ac40d4abfa2d071f5ad63aac0daad0f2.bin",
+                    "enable": "1"
+                }
+            ]
+        }
+    }
+}

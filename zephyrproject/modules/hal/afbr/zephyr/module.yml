@@ -1,0 +1,60 @@
+name: hal_afbr
+build:
+  cmake-ext: True
+  kconfig-ext: True
+
+blobs:
+
+  - path: AFBR-S50/Lib/libafbrs50_m0.a
+    sha256: a57175da2e763b47223f0a630590a334083ad7f74c31eb53a51a7e70fcb24d54
+    type: lib
+    version: '1.6.5'
+    license-path: LICENSE
+    url: https://github.com/CogniPilot/AFBR-S50-API/raw/refs/heads/main/AFBR-S50/Lib/libafbrs50_m0.a
+    description: AFBR-S50 API library for Cortex-M0
+    doc-url: https://github.com/cognipilot/afbr-s50-api
+
+  - path: AFBR-S50/Lib/libafbrs50_m3.a
+    sha256: 41dbf34420e01c58f4cc7de1b486f708c6a4ed6acc0065f3fd04c3763575a55a
+    type: lib
+    version: '1.6.5'
+    license-path: LICENSE
+    url: https://github.com/CogniPilot/AFBR-S50-API/raw/refs/heads/main/AFBR-S50/Lib/libafbrs50_m3.a
+    description: AFBR-S50 API library for Cortex-M3
+    doc-url: https://github.com/cognipilot/afbr-s50-api
+
+  - path: AFBR-S50/Lib/libafbrs50_m33.a
+    sha256: d0604f908eee7998dac00087842b8bdefbb4dd7f1e6985f4f20b1e17b5d49413
+    type: lib
+    version: '1.6.5'
+    license-path: LICENSE
+    url: https://github.com/CogniPilot/AFBR-S50-API/raw/refs/heads/main/AFBR-S50/Lib/libafbrs50_m33.a
+    description: AFBR-S50 API library for Cortex-M33
+    doc-url: https://github.com/cognipilot/afbr-s50-api
+
+  - path: AFBR-S50/Lib/libafbrs50_m4.a
+    sha256: aac5f3f0e7ef671191038655e1ac7d25bd03e5ef9cf4e20b18d3b2b923fb8230
+    type: lib
+    version: '1.6.5'
+    license-path: LICENSE
+    url: https://github.com/CogniPilot/AFBR-S50-API/raw/refs/heads/main/AFBR-S50/Lib/libafbrs50_m4.a
+    description: AFBR-S50 API library for Cortex-M4
+    doc-url: https://github.com/cognipilot/afbr-s50-api
+
+  - path: AFBR-S50/Lib/libafbrs50_m33_fpu.a
+    sha256: a780ba994504edef581db126764b609d04b778cdc928778bb03a4048490deee3
+    type: lib
+    version: '1.6.5'
+    license-path: LICENSE
+    url: https://github.com/CogniPilot/AFBR-S50-API/raw/refs/heads/main/AFBR-S50/Lib/libafbrs50_m33_fpu.a
+    description: AFBR-S50 API library for Cortex-M33 with FPU
+    doc-url: https://github.com/cognipilot/afbr-s50-api
+
+  - path: AFBR-S50/Lib/libafbrs50_m4_fpu.a
+    sha256: f98fa40110934e3a1e6c03326236f81b46157f3d84819781771459afb970330a
+    type: lib
+    version: '1.6.5'
+    license-path: LICENSE
+    url: https://github.com/CogniPilot/AFBR-S50-API/raw/refs/heads/main/AFBR-S50/Lib/libafbrs50_m4_fpu.a
+    description: AFBR-S50 API library for Cortex-M4 with FPU
+    doc-url: https://github.com/cognipilot/afbr-s50-api

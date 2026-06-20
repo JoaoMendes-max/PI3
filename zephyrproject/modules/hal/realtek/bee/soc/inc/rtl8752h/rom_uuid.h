@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2026, Realtek Semiconductor Corporation
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef _SYMBOLTABLE_UUID_H
+#define _SYMBOLTABLE_UUID_H
+
+#define DEFINE_symboltable_uuid { 0x98,0xc5,0x31,0x9b,0x43,0xc2,0xed,0x11,0xbe,0x06,0x11,0x3b,0x98,0x3e,0xdd,0x6f }
+
+#endif /* _SYMBOLTABLE_UUID_H */

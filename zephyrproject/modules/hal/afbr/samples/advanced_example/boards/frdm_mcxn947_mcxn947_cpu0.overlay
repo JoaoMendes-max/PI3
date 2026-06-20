@@ -1,0 +1,56 @@
+#include <nxp/mcx/MCXN947VDF-pinctrl.h>
+
+&pinctrl {
+	pinmux_flexcomm1_lpspi: pinmux_flexcomm1_lpspi {
+		group0 {
+			pinmux = <FC1_P0_PIO0_24>,
+				<FC1_P1_PIO0_25>,
+				<FC1_P2_PIO0_26>,
+				<FC1_P3_PIO0_27>;
+			slew-rate = "fast";
+			drive-strength = "high";
+			input-enable;
+		};
+	};
+	pinmux_gpio_lpspi: pinmux_gpio_lpspi {
+		group0 {
+			pinmux = <PIO0_24>,
+				<PIO0_25>,
+				<PIO0_26>,
+				<PIO0_27>;
+			slew-rate = "fast";
+			drive-strength = "high";
+		};
+	};
+};
+
+
+#include <zephyr/dt-bindings/sensor/afbr_s50.h>
+
+&flexcomm1_lpspi1 {
+	status = "okay";
+	pcs-sck-delay = <25>;
+	sck-pcs-delay = <25>;
+	transfer-delay = <0>;
+
+	pinctrl-0 = <&pinmux_flexcomm1_lpspi>;
+	pinctrl-1 = <&pinmux_gpio_lpspi>;
+	pinctrl-names = "default", "priv_start";
+
+	cs-gpios = <&gpio0 27 GPIO_ACTIVE_LOW>;
+
+	afbr_s50: afbr_s50@0 {
+		compatible = "brcm,afbr-s50";
+		reg = <0>;
+		spi-max-frequency = <2000000>;
+
+		odr = <10>;
+		dual-freq-mode = <AFBR_S50_DT_DFM_MODE_4X>;
+		measurement-mode = <AFBR_S50_DT_MODE_SHORT_RANGE>;
+
+		int-gpios = <&gpio0 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		spi-mosi-gpios = <&gpio0 24 GPIO_ACTIVE_HIGH>;
+		spi-sck-gpios = <&gpio0 25 GPIO_ACTIVE_HIGH>;
+		spi-miso-gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>;
+	};
+};

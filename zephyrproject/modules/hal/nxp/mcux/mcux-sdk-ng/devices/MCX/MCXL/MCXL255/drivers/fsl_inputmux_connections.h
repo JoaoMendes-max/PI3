@@ -1,0 +1,1388 @@
+/*
+ * Copyright 2025 NXP
+ * All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+#ifndef _FSL_INPUTMUX_CONNECTIONS_
+#define _FSL_INPUTMUX_CONNECTIONS_
+
+#include "PERI_INPUTMUX_MAIN.h"
+#include "PERI_INPUTMUX_AON.h"
+
+/*******************************************************************************
+ * Definitions
+ ******************************************************************************/
+/* Component ID definition, used by tools. */
+#ifndef FSL_COMPONENT_ID
+#define FSL_COMPONENT_ID "platform.drivers.inputmux_connections"
+#endif
+
+/*! @name Driver version */
+/*@{*/
+/*! @brief INPUTMUX_CONNECTION driver version 2.0.0. */
+#define FSL_INPUTMUX_CONNECTION_DRIVER_VERSION (MAKE_VERSION(2, 0, 0))
+/*@}*/
+
+#define INPUTMUX_GpioPortPinToPintsel(port, pin) ((pin) + (PINTSEL_PMUX_ID << PMUX_SHIFT))
+
+typedef void INPUTMUX_Type;
+
+/* Driver compatibility definitions. */
+#define AON__INPUTMUX      ((INPUTMUX_Type *)AON__INPUTMUX1_BASE)
+#if __CORTEX_M == (33U) /* Building on the main core */
+#define INPUTMUX           ((INPUTMUX_Type *)INPUTMUX0_BASE)
+#define INPUTMUX_BASE_PTRS { INPUTMUX0, AON__INPUTMUX1 }
+#else
+#define INPUTMUX_BASE_PTRS { (INPUTMUX_Type *)0u, AON__INPUTMUX1 }
+#endif
+
+/*!
+ * @addtogroup inputmux_driver
+ * @{
+ */
+
+/*!
+ * @name Input multiplexing connections
+ * @{
+ */
+
+/*! @brief Periphinmux IDs */
+#if __CORTEX_M == (33U) /* Building on the main core */
+
+#define CTIMER0CAPn_REG  0x20U
+#define CTIMER1CAPn_REG  0x40U
+#define CTIMER2CAPn_REG  0x60U
+#define ADC0_TRIGn_REG   0x280U
+#define AOI0_MUXn_REG    0x440U
+#define EXT_TRIGn_REG    0x4C0U
+#define CTIMER0TRIG_REG  0x30U
+#define CTIMER1TRIG_REG  0x50U
+#define CTIMER2TRIG_REG  0x70U
+#define FREQMEAS_REF_REG 0x180U
+#define FREQMEAS_TAR_REG 0x184U
+#define CMP0_TRIG_REG    0x260U
+#define LPI2C0_TRIG_REG  0x5A0U
+#define LPI2C1_TRIG_REG  0x5C0U
+#define LPSPI0_TRIG_REG  0x5E0U
+#define LPSPI1_TRIG_REG  0x600U
+#define LPUART0_REG      0x620U
+#define LPUART1_REG      0x640U
+
+#endif /* Building on the main core */
+
+#define QTMR0_TMRn_REG                   0x1A0U
+#define SOC_GLUE_XOR0_INn_REG            0x1B0U
+#define QTMR1_TMRn_REG                   0x1C0U
+#define LPACMP0_TRIGn_REG                0x260U
+#define LPADC0_TRIGn_REG                 0x280U
+#define AON_TRIG_OUTn_REG                0x4C0U
+#define SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG 0x1B8U
+#define SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG 0x1BCU
+#define LC_ROT_SOC_LOGIC_IN_REG          0x1D0U
+#define LCSENSE_SEQ_PTRIG_GLUE_IN_REG    0x1D4U
+#define LCSENSE_SEQ_TICKS_GLUE_IN_REG    0x1D8U
+#define ACMP0_SAMPLE_REG                 0x4E0U
+#define ACMP0_RR_TRIG_REG                0x4E4U
+#define LPI2C0_TRIG_REG                  0x5A0U
+#define LPUART0_REG                      0x620U
+
+
+#define PMUX_SHIFT 20U
+
+typedef enum _inputmux_index_t
+{
+#if __CORTEX_M == (33U) /* Building on the main core */
+
+    kINPUTMUX_INDEX_CTIMER0CAP0      = 0U,
+    kINPUTMUX_INDEX_CTIMER0CAP1      = 1U,
+    kINPUTMUX_INDEX_CTIMER0CAP2      = 2U,
+    kINPUTMUX_INDEX_CTIMER0CAP3      = 3U,
+    kINPUTMUX_INDEX_CTIMER1CAP0      = 0U,
+    kINPUTMUX_INDEX_CTIMER1CAP1      = 1U,
+    kINPUTMUX_INDEX_CTIMER1CAP2      = 2U,
+    kINPUTMUX_INDEX_CTIMER1CAP3      = 3U,
+    kINPUTMUX_INDEX_CTIMER2CAP0      = 0U,
+    kINPUTMUX_INDEX_CTIMER2CAP1      = 1U,
+    kINPUTMUX_INDEX_CTIMER2CAP2      = 2U,
+    kINPUTMUX_INDEX_CTIMER2CAP3      = 3U,
+    kINPUTMUX_INDEX_ADC0_TRIG0       = 0U,
+    kINPUTMUX_INDEX_ADC0_TRIG1       = 1U,
+    kINPUTMUX_INDEX_ADC0_TRIG2       = 2U,
+    kINPUTMUX_INDEX_ADC0_TRIG3       = 3U,
+    kINPUTMUX_INDEX_AOI0_MUX0        = 0U,
+    kINPUTMUX_INDEX_AOI0_MUX1        = 1U,
+    kINPUTMUX_INDEX_AOI0_MUX2        = 2U,
+    kINPUTMUX_INDEX_AOI0_MUX3        = 3U,
+    kINPUTMUX_INDEX_AOI0_MUX4        = 4U,
+    kINPUTMUX_INDEX_AOI0_MUX5        = 5U,
+    kINPUTMUX_INDEX_AOI0_MUX6        = 6U,
+    kINPUTMUX_INDEX_AOI0_MUX7        = 7U,
+    kINPUTMUX_INDEX_AOI0_MUX8        = 8U,
+    kINPUTMUX_INDEX_AOI0_MUX9        = 9U,
+    kINPUTMUX_INDEX_AOI0_MUX10       = 10U,
+    kINPUTMUX_INDEX_AOI0_MUX11       = 11U,
+    kINPUTMUX_INDEX_AOI0_MUX12       = 12U,
+    kINPUTMUX_INDEX_AOI0_MUX13       = 13U,
+    kINPUTMUX_INDEX_AOI0_MUX14       = 14U,
+    kINPUTMUX_INDEX_AOI0_MUX15       = 15U,
+    kINPUTMUX_INDEX_EXT_TRIG0        = 0U,
+    kINPUTMUX_INDEX_EXT_TRIG1        = 1U,
+    kINPUTMUX_INDEX_EXT_TRIG2        = 2U,
+    kINPUTMUX_INDEX_EXT_TRIG3        = 3U,
+    kINPUTMUX_INDEX_EXT_TRIG4        = 4U,
+    kINPUTMUX_INDEX_EXT_TRIG5        = 5U,
+    kINPUTMUX_INDEX_EXT_TRIG6        = 6U,
+    kINPUTMUX_INDEX_EXT_TRIG7        = 7U,
+    kINPUTMUX_INDEX_CTIMER0TRIG      = 0U,
+    kINPUTMUX_INDEX_CTIMER1TRIG      = 0U,
+    kINPUTMUX_INDEX_CTIMER2TRIG      = 0U,
+    kINPUTMUX_INDEX_FREQMEAS_REF     = 0U,
+    kINPUTMUX_INDEX_FREQMEAS_TAR     = 0U,
+    kINPUTMUX_INDEX_CMP0_TRIG        = 0U,
+    kINPUTMUX_INDEX_LPI2C0_TRIG      = 0U,
+    kINPUTMUX_INDEX_LPI2C1_TRIG      = 0U,
+    kINPUTMUX_INDEX_LPSPI0_TRIG      = 0U,
+    kINPUTMUX_INDEX_LPSPI1_TRIG      = 0U,
+    kINPUTMUX_INDEX_LPUART0          = 0U,
+    kINPUTMUX_INDEX_LPUART1          = 0U,
+
+#endif /* Building on the main core */
+
+    kINPUTMUXAON_INDEX_QTMR0_TMR0       = 0U,
+    kINPUTMUXAON_INDEX_QTMR0_TMR1       = 1U,
+    kINPUTMUXAON_INDEX_QTMR0_TMR2       = 2U,
+    kINPUTMUXAON_INDEX_QTMR0_TMR3       = 3U,
+    kINPUTMUXAON_INDEX_SOC_GLUE_XOR0_IN0 = 0U,
+    kINPUTMUXAON_INDEX_SOC_GLUE_XOR0_IN1 = 1U,
+    kINPUTMUXAON_INDEX_QTMR1_TMR0       = 0U,
+    kINPUTMUXAON_INDEX_QTMR1_TMR1       = 1U,
+    kINPUTMUXAON_INDEX_QTMR1_TMR2       = 2U,
+    kINPUTMUXAON_INDEX_QTMR1_TMR3       = 3U,
+    kINPUTMUXAON_INDEX_LPACMP0_TRIG0    = 0U,
+    kINPUTMUXAON_INDEX_LPACMP0_TRIG1    = 1U,
+    kINPUTMUXAON_INDEX_LPACMP0_TRIG2    = 2U,
+    kINPUTMUXAON_INDEX_LPACMP0_TRIG3    = 3U,
+    kINPUTMUXAON_INDEX_LPADC0_TRIG0     = 0U,
+    kINPUTMUXAON_INDEX_LPADC0_TRIG1     = 1U,
+    kINPUTMUXAON_INDEX_LPADC0_TRIG2     = 2U,
+    kINPUTMUXAON_INDEX_LPADC0_TRIG3     = 3U,
+    kINPUTMUXAON_INDEX_AON_TRIG_OUT0    = 0U,
+    kINPUTMUXAON_INDEX_AON_TRIG_OUT1    = 1U,
+    kINPUTMUXAON_INDEX_SOC_GLUE_CMPPADS_PCTRL_XOR_IN0 = 0U,
+    kINPUTMUXAON_INDEX_SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0 = 0U,
+    kINPUTMUXAON_INDEX_LC_ROT_SOC_LOGIC_IN = 0U,
+    kINPUTMUXAON_INDEX_LCSENSE_SEQ_PTRIG_GLUE_IN = 0U,
+    kINPUTMUXAON_INDEX_LCSENSE_SEQ_TICKS_GLUE_IN = 0U,
+    kINPUTMUXAON_INDEX_ACMP0_SAMPLE     = 0U,
+    kINPUTMUXAON_INDEX_ACMP0_RR_TRIG    = 0U,
+    kINPUTMUXAON_INDEX_LPI2C0_TRIG      = 0U,
+    kINPUTMUXAON_INDEX_LPUART0          = 0U,
+
+} inputmux_index_t;
+
+/*! @brief INPUTMUX connections type */
+typedef enum _inputmux_connection_t
+{
+#if __CORTEX_M == (33U) /* Building on the main core */
+
+    /*!< CTIMER0CAPn: Capture select register for CTIMER0 inputs */
+    kINPUTMUX_TrigInp0ToCTIMER0CAPn                = 1U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp0 input is selected */
+    kINPUTMUX_TrigInp1ToCTIMER0CAPn                = 2U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp1 input is selected */
+    kINPUTMUX_TrigInp2ToCTIMER0CAPn                = 3U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp2 input is selected */
+    kINPUTMUX_TrigInp3ToCTIMER0CAPn                = 4U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp3 input is selected */
+    kINPUTMUX_TrigInp4ToCTIMER0CAPn                = 5U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp4 input is selected */
+    kINPUTMUX_TrigInp5ToCTIMER0CAPn                = 6U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp5 input is selected */
+    kINPUTMUX_TrigInp6ToCTIMER0CAPn                = 7U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp6 input is selected */
+    kINPUTMUX_TrigInp7ToCTIMER0CAPn                = 8U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp7 input is selected */
+    kINPUTMUX_TrigInp8ToCTIMER0CAPn                = 9U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp8 input is selected */
+    kINPUTMUX_TrigInp9ToCTIMER0CAPn                = 10U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp9 input is selected */
+    kINPUTMUX_TrigInp10ToCTIMER0CAPn               = 11U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp10 input is selected */
+    kINPUTMUX_TrigInp11ToCTIMER0CAPn               = 12U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp11 input is selected */
+    kINPUTMUX_TrigInp12ToCTIMER0CAPn               = 13U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp12 input is selected */
+    kINPUTMUX_TrigInp13ToCTIMER0CAPn               = 14U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp13 input is selected */
+    kINPUTMUX_TrigInp14ToCTIMER0CAPn               = 15U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp14 input is selected */
+    kINPUTMUX_TrigInp15ToCTIMER0CAPn               = 16U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp15 input is selected */
+    kINPUTMUX_TrigInp16ToCTIMER0CAPn               = 17U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp16 input is selected */
+    kINPUTMUX_TrigInp17ToCTIMER0CAPn               = 18U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp17 input is selected */
+    kINPUTMUX_TrigInp18ToCTIMER0CAPn               = 19U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp18 input is selected */
+    kINPUTMUX_TrigInp19ToCTIMER0CAPn               = 20U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< trig_inp19 input is selected */
+    kINPUTMUX_Aoi0Out0ToCTIMER0CAPn                = 22U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToCTIMER0CAPn                = 23U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToCTIMER0CAPn                = 24U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToCTIMER0CAPn                = 25U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Adc0Tcomp0ToCTIMER0CAPn              = 26U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[0] */
+    kINPUTMUX_Adc0Tcomp1ToCTIMER0CAPn              = 27U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[1] */
+    kINPUTMUX_Adc0Tcomp2ToCTIMER0CAPn              = 28U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[2] */
+    kINPUTMUX_Adc0Tcomp3ToCTIMER0CAPn              = 29U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[3] input is selected */
+    kINPUTMUX_Cmp0OutToCTIMER0CAPn                 = 30U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUX_Ctimer1Mat1ToCTIMER0CAPn             = 33U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat2ToCTIMER0CAPn             = 34U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat3ToCTIMER0CAPn             = 35U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< ctimer1_mat3 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToCTIMER0CAPn             = 36U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToCTIMER0CAPn             = 37U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat3ToCTIMER0CAPn             = 38U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< ctimer2_mat3 input is selected */
+    kINPUTMUX_Lpi2c0CeopToCTIMER0CAPn              = 48U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c0TeopToCTIMER0CAPn              = 49U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet input is selected */
+    kINPUTMUX_Lpi2c1CeopToCTIMER0CAPn              = 50U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpi2c1 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c1TeopToCTIMER0CAPn              = 51U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpi2c1 target end of packet input is selected */
+    kINPUTMUX_Lpspi0EofToCTIMER0CAPn               = 52U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpspi0 end of frame input is selected */
+    kINPUTMUX_Lpspi0RdwToCTIMER0CAPn               = 53U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpspi0 received data word input is selected */
+    kINPUTMUX_Lpspi1EofToCTIMER0CAPn               = 54U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpspi1 end of frame input is selected */
+    kINPUTMUX_Lpspi1RdwToCTIMER0CAPn               = 55U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpspi1 received data word input is selected */
+    kINPUTMUX_Lpuart0RdwToCTIMER0CAPn              = 56U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpuart0 received data word input is selected */
+    kINPUTMUX_Lpuart0TdwToCTIMER0CAPn              = 57U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word input is selected */
+    kINPUTMUX_Lpuart0RliToCTIMER0CAPn              = 58U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle input is selected */
+    kINPUTMUX_Lpuart1RdwToCTIMER0CAPn              = 59U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpuart1 received data word input is selected */
+    kINPUTMUX_Lpuart1TdwToCTIMER0CAPn              = 60U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpuart1 transmitted data word input is selected */
+    kINPUTMUX_Lpuart1RliToCTIMER0CAPn              = 61U + (CTIMER0CAPn_REG << PMUX_SHIFT),  /*!< lpuart1 receive line idle input is selected */
+
+    /*!< CTIMER1CAPn: Capture select register for CTIMER1 inputs */
+    kINPUTMUX_TrigInp0ToCTIMER1CAPn                = 1U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp0 input is selected */
+    kINPUTMUX_TrigInp1ToCTIMER1CAPn                = 2U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp1 input is selected */
+    kINPUTMUX_TrigInp2ToCTIMER1CAPn                = 3U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp2 input is selected */
+    kINPUTMUX_TrigInp3ToCTIMER1CAPn                = 4U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp3 input is selected */
+    kINPUTMUX_TrigInp4ToCTIMER1CAPn                = 5U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp4 input is selected */
+    kINPUTMUX_TrigInp5ToCTIMER1CAPn                = 6U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp5 input is selected */
+    kINPUTMUX_TrigInp6ToCTIMER1CAPn                = 7U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp6 input is selected */
+    kINPUTMUX_TrigInp7ToCTIMER1CAPn                = 8U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp7 input is selected */
+    kINPUTMUX_TrigInp8ToCTIMER1CAPn                = 9U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp8 input is selected */
+    kINPUTMUX_TrigInp9ToCTIMER1CAPn                = 10U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp9 input is selected */
+    kINPUTMUX_TrigInp10ToCTIMER1CAPn               = 11U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp10 input is selected */
+    kINPUTMUX_TrigInp11ToCTIMER1CAPn               = 12U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp11 input is selected */
+    kINPUTMUX_TrigInp12ToCTIMER1CAPn               = 13U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp12 input is selected */
+    kINPUTMUX_TrigInp13ToCTIMER1CAPn               = 14U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp13 input is selected */
+    kINPUTMUX_TrigInp14ToCTIMER1CAPn               = 15U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp14 input is selected */
+    kINPUTMUX_TrigInp15ToCTIMER1CAPn               = 16U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp15 input is selected */
+    kINPUTMUX_TrigInp16ToCTIMER1CAPn               = 17U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp16 input is selected */
+    kINPUTMUX_TrigInp17ToCTIMER1CAPn               = 18U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp17 input is selected */
+    kINPUTMUX_TrigInp18ToCTIMER1CAPn               = 19U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp18 input is selected */
+    kINPUTMUX_TrigInp19ToCTIMER1CAPn               = 20U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< trig_inp19 input is selected */
+    kINPUTMUX_Aoi0Out0ToCTIMER1CAPn                = 22U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToCTIMER1CAPn                = 23U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToCTIMER1CAPn                = 24U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToCTIMER1CAPn                = 25U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Adc0Tcomp0ToCTIMER1CAPn              = 26U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[0] */
+    kINPUTMUX_Adc0Tcomp1ToCTIMER1CAPn              = 27U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[1] */
+    kINPUTMUX_Adc0Tcomp2ToCTIMER1CAPn              = 28U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[2] */
+    kINPUTMUX_Adc0Tcomp3ToCTIMER1CAPn              = 29U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[3] input is selected */
+    kINPUTMUX_Cmp0OutToCTIMER1CAPn                 = 30U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUX_Ctimer0Mat1ToCTIMER1CAPn             = 33U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer0Mat2ToCTIMER1CAPn             = 34U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer0Mat3ToCTIMER1CAPn             = 35U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< ctimer0_mat3 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToCTIMER1CAPn             = 36U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToCTIMER1CAPn             = 37U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat3ToCTIMER1CAPn             = 38U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< ctimer2_mat3 input is selected */
+    kINPUTMUX_Lpi2c0CeopToCTIMER1CAPn              = 48U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c0TeopToCTIMER1CAPn              = 49U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet input is selected */
+    kINPUTMUX_Lpi2c1CeopToCTIMER1CAPn              = 50U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpi2c1 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c1TeopToCTIMER1CAPn              = 51U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpi2c1 target end of packet input is selected */
+    kINPUTMUX_Lpspi0EofToCTIMER1CAPn               = 52U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpspi0 end of frame input is selected */
+    kINPUTMUX_Lpspi0RdwToCTIMER1CAPn               = 53U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpspi0 received data word input is selected */
+    kINPUTMUX_Lpspi1EofToCTIMER1CAPn               = 54U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpspi1 end of frame input is selected */
+    kINPUTMUX_Lpspi1RdwToCTIMER1CAPn               = 55U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpspi1 received data word input is selected */
+    kINPUTMUX_Lpuart0RdwToCTIMER1CAPn              = 56U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpuart0 received data word input is selected */
+    kINPUTMUX_Lpuart0TdwToCTIMER1CAPn              = 57U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word input is selected */
+    kINPUTMUX_Lpuart0RliToCTIMER1CAPn              = 58U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle input is selected */
+    kINPUTMUX_Lpuart1RdwToCTIMER1CAPn              = 59U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpuart1 received data word input is selected */
+    kINPUTMUX_Lpuart1TdwToCTIMER1CAPn              = 60U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpuart1 transmitted data word input is selected */
+    kINPUTMUX_Lpuart1RliToCTIMER1CAPn              = 61U + (CTIMER1CAPn_REG << PMUX_SHIFT),  /*!< lpuart1 receive line idle input is selected */
+
+    /*!< CTIMER2CAPn: Capture select register for CTIMER2 inputs */
+    kINPUTMUX_TrigInp0ToCTIMER2CAPn                = 1U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp0 input is selected */
+    kINPUTMUX_TrigInp1ToCTIMER2CAPn                = 2U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp1 input is selected */
+    kINPUTMUX_TrigInp2ToCTIMER2CAPn                = 3U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp2 input is selected */
+    kINPUTMUX_TrigInp3ToCTIMER2CAPn                = 4U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp3 input is selected */
+    kINPUTMUX_TrigInp4ToCTIMER2CAPn                = 5U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp4 input is selected */
+    kINPUTMUX_TrigInp5ToCTIMER2CAPn                = 6U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp5 input is selected */
+    kINPUTMUX_TrigInp6ToCTIMER2CAPn                = 7U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp6 input is selected */
+    kINPUTMUX_TrigInp7ToCTIMER2CAPn                = 8U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp7 input is selected */
+    kINPUTMUX_TrigInp8ToCTIMER2CAPn                = 9U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp8 input is selected */
+    kINPUTMUX_TrigInp9ToCTIMER2CAPn                = 10U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp9 input is selected */
+    kINPUTMUX_TrigInp10ToCTIMER2CAPn               = 11U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp10 input is selected */
+    kINPUTMUX_TrigInp11ToCTIMER2CAPn               = 12U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp11 input is selected */
+    kINPUTMUX_TrigInp12ToCTIMER2CAPn               = 13U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp12 input is selected */
+    kINPUTMUX_TrigInp13ToCTIMER2CAPn               = 14U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp13 input is selected */
+    kINPUTMUX_TrigInp14ToCTIMER2CAPn               = 15U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp14 input is selected */
+    kINPUTMUX_TrigInp15ToCTIMER2CAPn               = 16U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp15 input is selected */
+    kINPUTMUX_TrigInp16ToCTIMER2CAPn               = 17U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp16 input is selected */
+    kINPUTMUX_TrigInp17ToCTIMER2CAPn               = 18U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp17 input is selected */
+    kINPUTMUX_TrigInp18ToCTIMER2CAPn               = 19U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp18 input is selected */
+    kINPUTMUX_TrigInp19ToCTIMER2CAPn               = 20U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< trig_inp19 input is selected */
+    kINPUTMUX_Aoi0Out0ToCTIMER2CAPn                = 22U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToCTIMER2CAPn                = 23U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToCTIMER2CAPn                = 24U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToCTIMER2CAPn                = 25U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Adc0Tcomp0ToCTIMER2CAPn              = 26U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[0] */
+    kINPUTMUX_Adc0Tcomp1ToCTIMER2CAPn              = 27U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[1] */
+    kINPUTMUX_Adc0Tcomp2ToCTIMER2CAPn              = 28U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[2] */
+    kINPUTMUX_Adc0Tcomp3ToCTIMER2CAPn              = 29U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[3] input is selected */
+    kINPUTMUX_Cmp0OutToCTIMER2CAPn                 = 30U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUX_Ctimer0Mat1ToCTIMER2CAPn             = 33U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer0Mat2ToCTIMER2CAPn             = 34U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer0Mat3ToCTIMER2CAPn             = 35U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< ctimer0_mat3 input is selected */
+    kINPUTMUX_Ctimer1Mat1ToCTIMER2CAPn             = 36U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat2ToCTIMER2CAPn             = 37U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat3ToCTIMER2CAPn             = 38U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< ctimer1_mat3 input is selected */
+    kINPUTMUX_Lpi2c0CeopToCTIMER2CAPn              = 48U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c0TeopToCTIMER2CAPn              = 49U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet input is selected */
+    kINPUTMUX_Lpi2c1CeopToCTIMER2CAPn              = 50U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpi2c1 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c1TeopToCTIMER2CAPn              = 51U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpi2c1 target end of packet input is selected */
+    kINPUTMUX_Lpspi0EofToCTIMER2CAPn               = 52U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpspi0 end of frame input is selected */
+    kINPUTMUX_Lpspi0RdwToCTIMER2CAPn               = 53U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpspi0 received data word input is selected */
+    kINPUTMUX_Lpspi1EofToCTIMER2CAPn               = 54U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpspi1 end of frame input is selected */
+    kINPUTMUX_Lpspi1RdwToCTIMER2CAPn               = 55U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpspi1 received data word input is selected */
+    kINPUTMUX_Lpuart0RdwToCTIMER2CAPn              = 56U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpuart0 received data word input is selected */
+    kINPUTMUX_Lpuart0TdwToCTIMER2CAPn              = 57U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word input is selected */
+    kINPUTMUX_Lpuart0RliToCTIMER2CAPn              = 58U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle input is selected */
+    kINPUTMUX_Lpuart1RdwToCTIMER2CAPn              = 59U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpuart1 received data word input is selected */
+    kINPUTMUX_Lpuart1TdwToCTIMER2CAPn              = 60U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpuart1 transmitted data word input is selected */
+    kINPUTMUX_Lpuart1RliToCTIMER2CAPn              = 61U + (CTIMER2CAPn_REG << PMUX_SHIFT),  /*!< lpuart1 receive line idle input is selected */
+
+    /*!< ADC0_TRIGn: ADC Trigger Input Connections */
+    kINPUTMUX_Cm33TeToAdc0Trign                    = 1U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUX_Aoi0Out0ToAdc0Trign                  = 2U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToAdc0Trign                  = 3U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToAdc0Trign                  = 4U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToAdc0Trign                  = 5U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Cmp0OutToAdc0Trign                   = 6U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< cmp0_out input is selected */
+    kINPUTMUX_Ctimer0Mat0ToAdc0Trign               = 9U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< ctimer0_mat0 input is selected */
+    kINPUTMUX_Ctimer0Mat1ToAdc0Trign               = 10U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat0ToAdc0Trign               = 11U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< ctimer1_mat0 input is selected */
+    kINPUTMUX_Ctimer1Mat1ToAdc0Trign               = 12U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat0ToAdc0Trign               = 13U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< ctimer2_mat0 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToAdc0Trign               = 14U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_Lptmr0ToAdc0Trign                    = 15U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< lptmr0 is selected */
+    kINPUTMUX_Gpio1Pet0ToAdc0Trign                 = 27U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< gpio1 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio2Pet0ToAdc0Trign                 = 28U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< gpio2 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio3Pet0ToAdc0Trign                 = 29U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< gpio3 pin event trig 0 input is selected */
+    kINPUTMUX_WuuToAdc0Trign                       = 31U + (ADC0_TRIGn_REG << PMUX_SHIFT),  /*!< wuu is selected */
+
+    /*!< AOI0_MUXn: AOI0 Trigger Input Connections */
+    kINPUTMUX_Adc0Tcomp0ToAoi0Muxn                 = 1U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[0] input is selected */
+    kINPUTMUX_Adc0Tcomp1ToAoi0Muxn                 = 2U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[1] input is selected */
+    kINPUTMUX_Adc0Tcomp2ToAoi0Muxn                 = 3U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[2] input is selected */
+    kINPUTMUX_Adc0Tcomp3ToAoi0Muxn                 = 4U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< adc0_tcomp[3] input is selected */
+    kINPUTMUX_Cmp0OutToAoi0Muxn                    = 5U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< cmp0_out input is selected */
+    kINPUTMUX_Ctimer0Mat0ToAoi0Muxn                = 8U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer0_mat0 input is selected */
+    kINPUTMUX_Ctimer0Mat1ToAoi0Muxn                = 9U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer0Mat2ToAoi0Muxn                = 10U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer0Mat3ToAoi0Muxn                = 11U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer0_mat3 input is selected */
+    kINPUTMUX_Ctimer1Mat0ToAoi0Muxn                = 12U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer1_mat0 input is selected */
+    kINPUTMUX_Ctimer1Mat1ToAoi0Muxn                = 13U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat2ToAoi0Muxn                = 14U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat3ToAoi0Muxn                = 15U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer1_mat3 input is selected */
+    kINPUTMUX_Ctimer2Mat0ToAoi0Muxn                = 16U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer2_mat0 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToAoi0Muxn                = 17U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToAoi0Muxn                = 18U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat3ToAoi0Muxn                = 19U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< ctimer2_mat3 input is selected */
+    kINPUTMUX_Lptmr0ToAoi0Muxn                     = 20U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< lptmr0 is selected */
+    kINPUTMUX_TrigIn0ToAoi0Muxn                    = 35U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in0 input is selected */
+    kINPUTMUX_TrigIn1ToAoi0Muxn                    = 36U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in1 input is selected */
+    kINPUTMUX_TrigIn2ToAoi0Muxn                    = 37U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in2 input is selected */
+    kINPUTMUX_TrigIn3ToAoi0Muxn                    = 38U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in3 input is selected */
+    kINPUTMUX_TrigIn4ToAoi0Muxn                    = 39U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in4 input is selected */
+    kINPUTMUX_TrigIn5ToAoi0Muxn                    = 40U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in5 input is selected */
+    kINPUTMUX_TrigIn6ToAoi0Muxn                    = 41U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in6 input is selected */
+    kINPUTMUX_TrigIn7ToAoi0Muxn                    = 42U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in7 input is selected */
+    kINPUTMUX_TrigIn8ToAoi0Muxn                    = 43U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in8 input is selected */
+    kINPUTMUX_TrigIn9ToAoi0Muxn                    = 44U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in9 input is selected */
+    kINPUTMUX_TrigIn10ToAoi0Muxn                   = 45U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in10 input is selected */
+    kINPUTMUX_TrigIn11ToAoi0Muxn                   = 46U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< trig_in11 input is selected */
+    kINPUTMUX_Gpio1Pet0ToAoi0Muxn                  = 48U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< gpio1 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio2Pet0ToAoi0Muxn                  = 49U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< gpio2 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio3Pet0ToAoi0Muxn                  = 50U + (AOI0_MUXn_REG << PMUX_SHIFT),  /*!< gpio3 pin event trig 0 input is selected */
+
+    /*!< EXT_TRIGn: EXT Trigger Connections */
+    kINPUTMUX_Cm33TeToExtTrign                     = 1U + (EXT_TRIGn_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUX_Aoi0Out0ToExtTrign                   = 2U + (EXT_TRIGn_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToExtTrign                   = 3U + (EXT_TRIGn_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToExtTrign                   = 4U + (EXT_TRIGn_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToExtTrign                   = 5U + (EXT_TRIGn_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Cmp0OutToExtTrign                    = 6U + (EXT_TRIGn_REG << PMUX_SHIFT),  /*!< cmp0_out input is selected */
+    kINPUTMUX_Lpuart0TdToExtTrign                  = 9U + (EXT_TRIGn_REG << PMUX_SHIFT),  /*!< lpuart0 (transmit data) input is selected */
+    kINPUTMUX_Lpuart1TdToExtTrign                  = 10U + (EXT_TRIGn_REG << PMUX_SHIFT),  /*!< lpuart1 (transmit data) input is selected */
+
+    /*!< CTIMER0TRIG: Trigger register for CTIMER0 */
+    kINPUTMUX_TrigInp0ToCTIMER0TRIG                = 1U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp0 input is selected */
+    kINPUTMUX_TrigInp1ToCTIMER0TRIG                = 2U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp1 input is selected */
+    kINPUTMUX_TrigInp2ToCTIMER0TRIG                = 3U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp2 input is selected */
+    kINPUTMUX_TrigInp3ToCTIMER0TRIG                = 4U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp3 input is selected */
+    kINPUTMUX_TrigInp4ToCTIMER0TRIG                = 5U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp4 input is selected */
+    kINPUTMUX_TrigInp5ToCTIMER0TRIG                = 6U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp5 input is selected */
+    kINPUTMUX_TrigInp6ToCTIMER0TRIG                = 7U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp6 input is selected */
+    kINPUTMUX_TrigInp7ToCTIMER0TRIG                = 8U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp7 input is selected */
+    kINPUTMUX_TrigInp8ToCTIMER0TRIG                = 9U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp8 input is selected */
+    kINPUTMUX_TrigInp9ToCTIMER0TRIG                = 10U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp9 input is selected */
+    kINPUTMUX_TrigInp10ToCTIMER0TRIG               = 11U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp10 input is selected */
+    kINPUTMUX_TrigInp11ToCTIMER0TRIG               = 12U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp11 input is selected */
+    kINPUTMUX_TrigInp12ToCTIMER0TRIG               = 13U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp12 input is selected */
+    kINPUTMUX_TrigInp13ToCTIMER0TRIG               = 14U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp13 input is selected */
+    kINPUTMUX_TrigInp14ToCTIMER0TRIG               = 15U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp14 input is selected */
+    kINPUTMUX_TrigInp15ToCTIMER0TRIG               = 16U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp15 input is selected */
+    kINPUTMUX_TrigInp16ToCTIMER0TRIG               = 17U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp16 input is selected */
+    kINPUTMUX_TrigInp17ToCTIMER0TRIG               = 18U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp17 input is selected */
+    kINPUTMUX_TrigInp18ToCTIMER0TRIG               = 19U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp18 input is selected */
+    kINPUTMUX_TrigInp19ToCTIMER0TRIG               = 20U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< trig_inp19 input is selected */
+    kINPUTMUX_Aoi0Out0ToCTIMER0TRIG                = 22U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToCTIMER0TRIG                = 23U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToCTIMER0TRIG                = 24U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToCTIMER0TRIG                = 25U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Adc0Tcomp0ToCTIMER0TRIG              = 26U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[0] */
+    kINPUTMUX_Adc0Tcomp1ToCTIMER0TRIG              = 27U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[1] */
+    kINPUTMUX_Adc0Tcomp2ToCTIMER0TRIG              = 28U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[2] */
+    kINPUTMUX_Adc0Tcomp3ToCTIMER0TRIG              = 29U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[3] input is selected */
+    kINPUTMUX_Cmp0OutToCTIMER0TRIG                 = 30U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUX_Ctimer1Mat1ToCTIMER0TRIG             = 33U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat2ToCTIMER0TRIG             = 34U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat3ToCTIMER0TRIG             = 35U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat3 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToCTIMER0TRIG             = 36U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToCTIMER0TRIG             = 37U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat3ToCTIMER0TRIG             = 38U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat3 input is selected */
+    kINPUTMUX_Lpi2c0CeopToCTIMER0TRIG              = 48U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c0TeopToCTIMER0TRIG              = 49U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet input is selected */
+    kINPUTMUX_Lpi2c1CeopToCTIMER0TRIG              = 50U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpi2c1 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c1TeopToCTIMER0TRIG              = 51U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpi2c1 target end of packet input is selected */
+    kINPUTMUX_Lpspi0EofToCTIMER0TRIG               = 52U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpspi0 end of frame input is selected */
+    kINPUTMUX_Lpspi0RdwToCTIMER0TRIG               = 53U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpspi0 received data word input is selected */
+    kINPUTMUX_Lpspi1EofToCTIMER0TRIG               = 54U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpspi1 end of frame input is selected */
+    kINPUTMUX_Lpspi1RdwToCTIMER0TRIG               = 55U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpspi1 received data word input is selected */
+    kINPUTMUX_Lpuart0RdwToCTIMER0TRIG              = 56U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpuart0 received data word input is selected */
+    kINPUTMUX_Lpuart0TdwToCTIMER0TRIG              = 57U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word input is selected */
+    kINPUTMUX_Lpuart0RliToCTIMER0TRIG              = 58U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle input is selected */
+    kINPUTMUX_Lpuart1RdwToCTIMER0TRIG              = 59U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpuart1 received data word input is selected */
+    kINPUTMUX_Lpuart1TdwToCTIMER0TRIG              = 60U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpuart1 transmitted data word input is selected */
+    kINPUTMUX_Lpuart1RliToCTIMER0TRIG              = 61U + (CTIMER0TRIG_REG << PMUX_SHIFT),  /*!< lpuart1 receive line idle input is selected */
+
+    /*!< CTIMER1TRIG: Trigger register for CTIMER1 */
+    kINPUTMUX_TrigInp0ToCTIMER1TRIG                = 1U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp0 input is selected */
+    kINPUTMUX_TrigInp1ToCTIMER1TRIG                = 2U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp1 input is selected */
+    kINPUTMUX_TrigInp2ToCTIMER1TRIG                = 3U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp2 input is selected */
+    kINPUTMUX_TrigInp3ToCTIMER1TRIG                = 4U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp3 input is selected */
+    kINPUTMUX_TrigInp4ToCTIMER1TRIG                = 5U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp4 input is selected */
+    kINPUTMUX_TrigInp5ToCTIMER1TRIG                = 6U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp5 input is selected */
+    kINPUTMUX_TrigInp6ToCTIMER1TRIG                = 7U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp6 input is selected */
+    kINPUTMUX_TrigInp7ToCTIMER1TRIG                = 8U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp7 input is selected */
+    kINPUTMUX_TrigInp8ToCTIMER1TRIG                = 9U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp8 input is selected */
+    kINPUTMUX_TrigInp9ToCTIMER1TRIG                = 10U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp9 input is selected */
+    kINPUTMUX_TrigInp10ToCTIMER1TRIG               = 11U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp10 input is selected */
+    kINPUTMUX_TrigInp11ToCTIMER1TRIG               = 12U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp11 input is selected */
+    kINPUTMUX_TrigInp12ToCTIMER1TRIG               = 13U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp12 input is selected */
+    kINPUTMUX_TrigInp13ToCTIMER1TRIG               = 14U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp13 input is selected */
+    kINPUTMUX_TrigInp14ToCTIMER1TRIG               = 15U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp14 input is selected */
+    kINPUTMUX_TrigInp15ToCTIMER1TRIG               = 16U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp15 input is selected */
+    kINPUTMUX_TrigInp16ToCTIMER1TRIG               = 17U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp16 input is selected */
+    kINPUTMUX_TrigInp17ToCTIMER1TRIG               = 18U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp17 input is selected */
+    kINPUTMUX_TrigInp18ToCTIMER1TRIG               = 19U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp18 input is selected */
+    kINPUTMUX_TrigInp19ToCTIMER1TRIG               = 20U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< trig_inp19 input is selected */
+    kINPUTMUX_Aoi0Out0ToCTIMER1TRIG                = 22U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToCTIMER1TRIG                = 23U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToCTIMER1TRIG                = 24U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToCTIMER1TRIG                = 25U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Adc0Tcomp0ToCTIMER1TRIG              = 26U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[0] */
+    kINPUTMUX_Adc0Tcomp1ToCTIMER1TRIG              = 27U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[1] */
+    kINPUTMUX_Adc0Tcomp2ToCTIMER1TRIG              = 28U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[2] */
+    kINPUTMUX_Adc0Tcomp3ToCTIMER1TRIG              = 29U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[3] input is selected */
+    kINPUTMUX_Cmp0OutToCTIMER1TRIG                 = 30U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUX_Ctimer0Mat1ToCTIMER1TRIG             = 33U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer0Mat2ToCTIMER1TRIG             = 34U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer0Mat3ToCTIMER1TRIG             = 35U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat3 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToCTIMER1TRIG             = 36U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToCTIMER1TRIG             = 37U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat3ToCTIMER1TRIG             = 38U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat3 input is selected */
+    kINPUTMUX_Lpi2c0CeopToCTIMER1TRIG              = 48U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c0TeopToCTIMER1TRIG              = 49U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet input is selected */
+    kINPUTMUX_Lpi2c1CeopToCTIMER1TRIG              = 50U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpi2c1 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c1TeopToCTIMER1TRIG              = 51U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpi2c1 target end of packet input is selected */
+    kINPUTMUX_Lpspi0EofToCTIMER1TRIG               = 52U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpspi0 end of frame input is selected */
+    kINPUTMUX_Lpspi0RdwToCTIMER1TRIG               = 53U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpspi0 received data word input is selected */
+    kINPUTMUX_Lpspi1EofToCTIMER1TRIG               = 54U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpspi1 end of frame input is selected */
+    kINPUTMUX_Lpspi1RdwToCTIMER1TRIG               = 55U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpspi1 received data word input is selected */
+    kINPUTMUX_Lpuart0RdwToCTIMER1TRIG              = 56U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpuart0 received data word input is selected */
+    kINPUTMUX_Lpuart0TdwToCTIMER1TRIG              = 57U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word input is selected */
+    kINPUTMUX_Lpuart0RliToCTIMER1TRIG              = 58U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle input is selected */
+    kINPUTMUX_Lpuart1RdwToCTIMER1TRIG              = 59U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpuart1 received data word input is selected */
+    kINPUTMUX_Lpuart1TdwToCTIMER1TRIG              = 60U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpuart1 transmitted data word input is selected */
+    kINPUTMUX_Lpuart1RliToCTIMER1TRIG              = 61U + (CTIMER1TRIG_REG << PMUX_SHIFT),  /*!< lpuart1 receive line idle input is selected */
+
+    /*!< CTIMER2TRIG: Trigger register for CTIMER2 inputs */
+    kINPUTMUX_TrigInp0ToCTIMER2TRIG                = 1U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp0 input is selected */
+    kINPUTMUX_TrigInp1ToCTIMER2TRIG                = 2U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp1 input is selected */
+    kINPUTMUX_TrigInp2ToCTIMER2TRIG                = 3U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp2 input is selected */
+    kINPUTMUX_TrigInp3ToCTIMER2TRIG                = 4U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp3 input is selected */
+    kINPUTMUX_TrigInp4ToCTIMER2TRIG                = 5U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp4 input is selected */
+    kINPUTMUX_TrigInp5ToCTIMER2TRIG                = 6U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp5 input is selected */
+    kINPUTMUX_TrigInp6ToCTIMER2TRIG                = 7U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp6 input is selected */
+    kINPUTMUX_TrigInp7ToCTIMER2TRIG                = 8U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp7 input is selected */
+    kINPUTMUX_TrigInp8ToCTIMER2TRIG                = 9U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp8 input is selected */
+    kINPUTMUX_TrigInp9ToCTIMER2TRIG                = 10U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp9 input is selected */
+    kINPUTMUX_TrigInp10ToCTIMER2TRIG               = 11U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp10 input is selected */
+    kINPUTMUX_TrigInp11ToCTIMER2TRIG               = 12U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp11 input is selected */
+    kINPUTMUX_TrigInp12ToCTIMER2TRIG               = 13U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp12 input is selected */
+    kINPUTMUX_TrigInp13ToCTIMER2TRIG               = 14U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp13 input is selected */
+    kINPUTMUX_TrigInp14ToCTIMER2TRIG               = 15U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp14 input is selected */
+    kINPUTMUX_TrigInp15ToCTIMER2TRIG               = 16U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp15 input is selected */
+    kINPUTMUX_TrigInp16ToCTIMER2TRIG               = 17U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp16 input is selected */
+    kINPUTMUX_TrigInp17ToCTIMER2TRIG               = 18U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp17 input is selected */
+    kINPUTMUX_TrigInp18ToCTIMER2TRIG               = 19U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp18 input is selected */
+    kINPUTMUX_TrigInp19ToCTIMER2TRIG               = 20U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< trig_inp19 input is selected */
+    kINPUTMUX_Aoi0Out0ToCTIMER2TRIG                = 22U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToCTIMER2TRIG                = 23U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToCTIMER2TRIG                = 24U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToCTIMER2TRIG                = 25U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Adc0Tcomp0ToCTIMER2TRIG              = 26U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[0] */
+    kINPUTMUX_Adc0Tcomp1ToCTIMER2TRIG              = 27U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[1] */
+    kINPUTMUX_Adc0Tcomp2ToCTIMER2TRIG              = 28U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[2] */
+    kINPUTMUX_Adc0Tcomp3ToCTIMER2TRIG              = 29U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< adc0_tcomp[3] input is selected */
+    kINPUTMUX_Cmp0OutToCTIMER2TRIG                 = 30U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUX_Ctimer0Mat1ToCTIMER2TRIG             = 33U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer0Mat2ToCTIMER2TRIG             = 34U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer0Mat3ToCTIMER2TRIG             = 35U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat3 input is selected */
+    kINPUTMUX_Ctimer1Mat1ToCTIMER2TRIG             = 36U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat2ToCTIMER2TRIG             = 37U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat3ToCTIMER2TRIG             = 38U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat3 input is selected */
+    kINPUTMUX_Lpi2c0CeopToCTIMER2TRIG              = 48U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c0TeopToCTIMER2TRIG              = 49U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet input is selected */
+    kINPUTMUX_Lpi2c1CeopToCTIMER2TRIG              = 50U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpi2c1 controller end of packet input is selected */
+    kINPUTMUX_Lpi2c1TeopToCTIMER2TRIG              = 51U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpi2c1 target end of packet input is selected */
+    kINPUTMUX_Lpspi0EofToCTIMER2TRIG               = 52U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpspi0 end of frame input is selected */
+    kINPUTMUX_Lpspi0RdwToCTIMER2TRIG               = 53U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpspi0 received data word input is selected */
+    kINPUTMUX_Lpspi1EofToCTIMER2TRIG               = 54U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpspi1 end of frame input is selected */
+    kINPUTMUX_Lpspi1RdwToCTIMER2TRIG               = 55U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpspi1 received data word input is selected */
+    kINPUTMUX_Lpuart0RdwToCTIMER2TRIG              = 56U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpuart0 received data word input is selected */
+    kINPUTMUX_Lpuart0TdwToCTIMER2TRIG              = 57U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word input is selected */
+    kINPUTMUX_Lpuart0RliToCTIMER2TRIG              = 58U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle input is selected */
+    kINPUTMUX_Lpuart1RdwToCTIMER2TRIG              = 59U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpuart1 received data word input is selected */
+    kINPUTMUX_Lpuart1TdwToCTIMER2TRIG              = 60U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpuart1 transmitted data word input is selected */
+    kINPUTMUX_Lpuart1RliToCTIMER2TRIG              = 61U + (CTIMER2TRIG_REG << PMUX_SHIFT),  /*!< lpuart1 receive line idle input is selected */
+
+    /*!< FREQMEAS_REF: Selection for frequency measurement reference clock */
+    kINPUTMUX_Fro12mToFreqmeasRef                  = 2U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< fro12m input is selected */
+    kINPUTMUX_FroHfDivToFreqmeasRef                = 3U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< fro_hf_div input is selected */
+    kINPUTMUX_Xtal32k2ToFreqmeasRef                = 4U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< xtal32k[2] input is selected */
+    kINPUTMUX_Clk16k0ToFreqmeasRef                 = 5U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< clk_16k[0] input is selected */
+    kINPUTMUX_SlowClkToFreqmeasRef                 = 6U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< slow_clk input is selected */
+    kINPUTMUX_FreqmeClkIn0ToFreqmeasRef            = 7U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< freqme_clk_in0 input is selected */
+    kINPUTMUX_FreqmeClkIn1IToFreqmeasRef           = 8U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< freqme_clk_in1 input is selected input is selected */
+    kINPUTMUX_Aoi0Out0ToFreqmeasRef                = 9U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToFreqmeasRef                = 10U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< aoi0_out1 */
+    kINPUTMUX_ScgFircClkTestToFreqmeasRef          = 17U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< scg_firc_clk_test */
+    kINPUTMUX_FirstFailClkInToFreqmeasRef          = 18U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< first_fail_clk_in */
+    kINPUTMUX_ClkIomuxIppScgIppDoScgClkoutToFreqmeasRef = 19U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< clk__iomux__ipp__scg__ipp_do_scg_clkout */
+    kINPUTMUX_MtrBistHeartbeatToFreqmeasRef        = 20U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< mtr_bist_heartbeat */
+    kINPUTMUX_AonAdvcVdd1p0TestSfaToFreqmeasRef    = 21U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< aon_advc_vdd1p0_test_sfa */
+    kINPUTMUX_AonAdvcVddTestSfaToFreqmeasRef       = 22U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< aon_advc_vdd_test_sfa */
+    kINPUTMUX_AonAdvcPmcDelayCellOutSfaToFreqmeasRef = 23U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< aon_advc_pmc_delay_cell_out_sfa */
+    kINPUTMUX_AonAdvcPmcExpTmrOutSfaToFreqmeasRef  = 24U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< aon_advc_pmc_exp_tmr_out_sfa */
+    kINPUTMUX_AonAdvcFro16kClkoutSfaToFreqmeasRef  = 25U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< aon_advc_fro16k_clkout_sfa */
+    kINPUTMUX_AonAdvcAonCpuClkToFreqmeasRef        = 26U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< aon_advc_aon_cpu_clk */
+    kINPUTMUX_RtcAonTstDigOutToFreqmeasRef         = 27U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< rtc_aon_tst_dig_out */
+    kINPUTMUX_Fro10mCndipToFreqmeasRef             = 28U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< fro_10m clock (no divider in path) */
+    kINPUTMUX_FroHfNdipToFreqmeasRef               = 29U + (FREQMEAS_REF_REG << PMUX_SHIFT),  /*!< fro_hf (no divider in path) */
+
+    /*!< FREQMEAS_TAR: Selection for frequency measurement target clock */
+    kINPUTMUX_Fro12mToFreqmeasTar                  = 2U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< fro12m input is selected */
+    kINPUTMUX_FroHfDivToFreqmeasTar                = 3U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< fro_hf_div input is selected */
+    kINPUTMUX_Xtal32k2ToFreqmeasTar                = 4U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< xtal32k[2] input is selected */
+    kINPUTMUX_Clk16k0ToFreqmeasTar                 = 5U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< clk_16k[0] input is selected */
+    kINPUTMUX_SlowClkToFreqmeasTar                 = 6U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< slow_clk input is selected */
+    kINPUTMUX_FreqmeClkIn0ToFreqmeasTar            = 7U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< freqme_clk_in0 input is selected */
+    kINPUTMUX_FreqmeClkIn1IToFreqmeasTar           = 8U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< freqme_clk_in1 input is selected input is selected */
+    kINPUTMUX_Aoi0Out0ToFreqmeasTar                = 9U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToFreqmeasTar                = 10U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< aoi0_out1 */
+    kINPUTMUX_FirstFailClkInToFreqmeasTar          = 18U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< first_fail_clk_in */
+    kINPUTMUX_ClkIomuxIppScgIppDoScgClkoutToFreqmeasTar = 19U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< clk__iomux__ipp__scg__ipp_do_scg_clkout */
+    kINPUTMUX_MtrBistHeartbeatToFreqmeasTar        = 20U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< mtr_bist_heartbeat */
+    kINPUTMUX_AonAdvcVdd1p0TestSfaToFreqmeasTar    = 21U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< aon_advc_vdd1p0_test_sfa */
+    kINPUTMUX_AonAdvcVddTestSfaToFreqmeasTar       = 22U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< aon_advc_vdd_test_sfa */
+    kINPUTMUX_AonAdvcPmcDelayCellOutSfaToFreqmeasTar = 23U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< aon_advc_pmc_delay_cell_out_sfa */
+    kINPUTMUX_AonAdvcPmcExpTmrOutSfaToFreqmeasTar  = 24U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< aon_advc_pmc_exp_tmr_out_sfa */
+    kINPUTMUX_AonAdvcFro16kClkoutSfaToFreqmeasTar  = 25U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< aon_advc_fro16k_clkout_sfa */
+    kINPUTMUX_AonAdvcAonCpuClkToFreqmeasTar        = 26U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< aon_advc_aon_cpu_clk */
+    kINPUTMUX_RtcAonTstDigOutToFreqmeasTar         = 27U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< rtc_aon_tst_dig_out */
+    kINPUTMUX_Fro10mCndipToFreqmeasTar             = 28U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< fro_10m clock (no divider in path) */
+    kINPUTMUX_FroHfNdipToFreqmeasTar               = 29U + (FREQMEAS_TAR_REG << PMUX_SHIFT),  /*!< fro_hf (no divider in path) */
+
+    /*!< CMP0_TRIG: CMP0 Input Connections */
+    kINPUTMUX_Cm33TeToCmp0Trig                     = 1U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUX_Aoi0Out0ToCmp0Trig                   = 2U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToCmp0Trig                   = 3U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToCmp0Trig                   = 4U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToCmp0Trig                   = 5U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Ctimer0Mat0ToCmp0Trig                = 8U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat0 input is selected */
+    kINPUTMUX_Ctimer0Mat2ToCmp0Trig                = 9U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat0ToCmp0Trig                = 10U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat0 */
+    kINPUTMUX_Ctimer1Mat2ToCmp0Trig                = 11U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat0ToCmp0Trig                = 12U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat0 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToCmp0Trig                = 13U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_Gpio1Pet0ToCmp0Trig                  = 26U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< gpio1 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio2Pet0ToCmp0Trig                  = 27U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< gpio2 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio3Pet0ToCmp0Trig                  = 28U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< gpio3 pin event trig 0 input is selected */
+    kINPUTMUX_WuuToCmp0Trig                        = 30U + (CMP0_TRIG_REG << PMUX_SHIFT),  /*!< wuu input is selected */
+
+    /*!< LPI2C0_TRIG: LPI2C0 Trigger Input Connections */
+    kINPUTMUX_Cm33TeToLpi2c0Trig                   = 1U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUX_Aoi0Out0ToLpi2c0Trig                 = 2U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToLpi2c0Trig                 = 3U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToLpi2c0Trig                 = 4U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToLpi2c0Trig                 = 5U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Cmp0OutToLpi2c0Trig                  = 6U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< cmp0_out input is selected */
+    kINPUTMUX_Ctimer0Mat0ToLpi2c0Trig              = 9U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat0 input is selected */
+    kINPUTMUX_Ctimer0Mat1ToLpi2c0Trig              = 10U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat0ToLpi2c0Trig              = 11U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat0 input is selected */
+    kINPUTMUX_Ctimer1Mat1ToLpi2c0Trig              = 12U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat0ToLpi2c0Trig              = 13U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat0 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToLpi2c0Trig              = 14U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_TrigIn0ToLpi2c0Trig                  = 17U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in0 input is selected */
+    kINPUTMUX_TrigIn1ToLpi2c0Trig                  = 18U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in1 input is selected */
+    kINPUTMUX_TrigIn2ToLpi2c0Trig                  = 19U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in2 input is selected */
+    kINPUTMUX_TrigIn3ToLpi2c0Trig                  = 20U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in3 input is selected */
+    kINPUTMUX_TrigIn4ToLpi2c0Trig                  = 21U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in4 input is selected */
+    kINPUTMUX_TrigIn5ToLpi2c0Trig                  = 22U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in5 input is selected */
+    kINPUTMUX_TrigIn6ToLpi2c0Trig                  = 23U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in6 input is selected */
+    kINPUTMUX_TrigIn7ToLpi2c0Trig                  = 24U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in7 input is selected */
+    kINPUTMUX_Gpio1Pet0ToLpi2c0Trig                = 26U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< gpio1 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio2Pet0ToLpi2c0Trig                = 27U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< gpio2 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio3Pet0ToLpi2c0Trig                = 28U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< gpio3 pin event trig 0 input is selected */
+    kINPUTMUX_WuuToLpi2c0Trig                      = 30U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< wuu input is selected */
+
+    /*!< LPI2C1_TRIG: LPI2C1 Trigger Input Connections */
+    kINPUTMUX_Cm33TeToLpi2c1Trig                   = 1U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUX_Aoi0Out0ToLpi2c1Trig                 = 2U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToLpi2c1Trig                 = 3U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToLpi2c1Trig                 = 4U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToLpi2c1Trig                 = 5U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Cmp0OutToLpi2c1Trig                  = 6U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< cmp0_out input is selected */
+    kINPUTMUX_Ctimer0Mat0ToLpi2c1Trig              = 9U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat0 input is selected */
+    kINPUTMUX_Ctimer0Mat1ToLpi2c1Trig              = 10U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat0ToLpi2c1Trig              = 11U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat0 input is selected */
+    kINPUTMUX_Ctimer1Mat1ToLpi2c1Trig              = 12U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat0ToLpi2c1Trig              = 13U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat0 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToLpi2c1Trig              = 14U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_TrigIn0ToLpi2c1Trig                  = 17U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in0 input is selected */
+    kINPUTMUX_TrigIn1ToLpi2c1Trig                  = 18U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in1 input is selected */
+    kINPUTMUX_TrigIn2ToLpi2c1Trig                  = 19U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in2 input is selected */
+    kINPUTMUX_TrigIn3ToLpi2c1Trig                  = 20U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in3 input is selected */
+    kINPUTMUX_TrigIn4ToLpi2c1Trig                  = 21U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in4 input is selected */
+    kINPUTMUX_TrigIn5ToLpi2c1Trig                  = 22U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in5 input is selected */
+    kINPUTMUX_TrigIn6ToLpi2c1Trig                  = 23U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in6 input is selected */
+    kINPUTMUX_TrigIn7ToLpi2c1Trig                  = 24U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in7 input is selected */
+    kINPUTMUX_Gpio1Pet0ToLpi2c1Trig                = 26U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< gpio1 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio2Pet0ToLpi2c1Trig                = 27U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< gpio2 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio3Pet0ToLpi2c1Trig                = 28U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< gpio3 pin event trig 0 input is selected */
+    kINPUTMUX_WuuToLpi2c1Trig                      = 30U + (LPI2C1_TRIG_REG << PMUX_SHIFT),  /*!< wuu input is selected */
+
+    /*!< LPSPI0_TRIG: LPSPI0 Trigger Input Connections */
+    kINPUTMUX_Cm33TeToLpspi0Trig                   = 1U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUX_Aoi0Out0ToLpspi0Trig                 = 2U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToLpspi0Trig                 = 3U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToLpspi0Trig                 = 4U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToLpspi0Trig                 = 5U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Cmp0OutToLpspi0Trig                  = 6U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< cmp0_out input is selected */
+    kINPUTMUX_Ctimer0Mat1ToLpspi0Trig              = 9U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer0Mat2ToLpspi0Trig              = 10U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat1ToLpspi0Trig              = 11U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat2ToLpspi0Trig              = 12U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToLpspi0Trig              = 13U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToLpspi0Trig              = 14U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_TrigIn0ToLpspi0Trig                  = 17U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in0 input is selected */
+    kINPUTMUX_TrigIn1ToLpspi0Trig                  = 18U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in1 input is selected */
+    kINPUTMUX_TrigIn2ToLpspi0Trig                  = 19U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in2 input is selected */
+    kINPUTMUX_TrigIn3ToLpspi0Trig                  = 20U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in3 input is selected */
+    kINPUTMUX_TrigIn4ToLpspi0Trig                  = 21U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in4 input is selected */
+    kINPUTMUX_TrigIn5ToLpspi0Trig                  = 22U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in5 input is selected */
+    kINPUTMUX_TrigIn6ToLpspi0Trig                  = 23U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in6 input is selected */
+    kINPUTMUX_TrigIn7ToLpspi0Trig                  = 24U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< trig_in7 input is selected */
+    kINPUTMUX_Gpio1Pet0ToLpspi0Trig                = 26U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< gpio1 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio2Pet0ToLpspi0Trig                = 27U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< gpio2 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio3Pet0ToLpspi0Trig                = 28U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< gpio3 pin event trig 0 input is selected */
+    kINPUTMUX_WuuToLpspi0Trig                      = 30U + (LPSPI0_TRIG_REG << PMUX_SHIFT),  /*!< wuu input is selected */
+
+    /*!< LPSPI1_TRIG: LPSPI1 Trigger Input Connections */
+    kINPUTMUX_Cm33TeToLpspi1Trig                   = 1U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUX_Aoi0Out0ToLpspi1Trig                 = 2U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToLpspi1Trig                 = 3U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToLpspi1Trig                 = 4U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToLpspi1Trig                 = 5U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Cmp0OutToLpspi1Trig                  = 6U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< cmp0_out input is selected */
+    kINPUTMUX_Ctimer0Mat1ToLpspi1Trig              = 9U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat1 input is selected */
+    kINPUTMUX_Ctimer0Mat2ToLpspi1Trig              = 10U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat1ToLpspi1Trig              = 11U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat1 input is selected */
+    kINPUTMUX_Ctimer1Mat2ToLpspi1Trig              = 12U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat1ToLpspi1Trig              = 13U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat1 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToLpspi1Trig              = 14U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_TrigIn0ToLpspi1Trig                  = 17U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in0 input is selected */
+    kINPUTMUX_TrigIn1ToLpspi1Trig                  = 18U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in1 input is selected */
+    kINPUTMUX_TrigIn2ToLpspi1Trig                  = 19U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in2 input is selected */
+    kINPUTMUX_TrigIn3ToLpspi1Trig                  = 20U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in3 input is selected */
+    kINPUTMUX_TrigIn4ToLpspi1Trig                  = 21U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in4 input is selected */
+    kINPUTMUX_TrigIn5ToLpspi1Trig                  = 22U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in5 input is selected */
+    kINPUTMUX_TrigIn6ToLpspi1Trig                  = 23U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in6 input is selected */
+    kINPUTMUX_TrigIn7ToLpspi1Trig                  = 24U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< trig_in7 input is selected */
+    kINPUTMUX_Gpio1Pet0ToLpspi1Trig                = 26U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< gpio1 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio2Pet0ToLpspi1Trig                = 27U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< gpio2 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio3Pet0ToLpspi1Trig                = 28U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< gpio3 pin event trig 0 input is selected */
+    kINPUTMUX_WuuToLpspi1Trig                      = 30U + (LPSPI1_TRIG_REG << PMUX_SHIFT),  /*!< wuu input is selected */
+
+    /*!< LPUART0: LPUART0 Trigger Input Connections */
+    kINPUTMUX_Cm33TeToLPUART0                      = 1U + (LPUART0_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUX_Aoi0Out0ToLPUART0                    = 2U + (LPUART0_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToLPUART0                    = 3U + (LPUART0_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToLPUART0                    = 4U + (LPUART0_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToLPUART0                    = 5U + (LPUART0_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Cmp0OutToLPUART0                     = 6U + (LPUART0_REG << PMUX_SHIFT),  /*!< cmp0_out input is selected */
+    kINPUTMUX_Ctimer0Mat2ToLPUART0                 = 9U + (LPUART0_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer0Mat3ToLPUART0                 = 10U + (LPUART0_REG << PMUX_SHIFT),  /*!< ctimer0_mat3 input is selected */
+    kINPUTMUX_Ctimer1Mat2ToLPUART0                 = 11U + (LPUART0_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat3ToLPUART0                 = 12U + (LPUART0_REG << PMUX_SHIFT),  /*!< ctimer1_mat3 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToLPUART0                 = 13U + (LPUART0_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat3ToLPUART0                 = 14U + (LPUART0_REG << PMUX_SHIFT),  /*!< ctimer2_mat3 input is selected */
+    kINPUTMUX_TrigIn0ToLPUART0                     = 17U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in0 input is selected */
+    kINPUTMUX_TrigIn1ToLPUART0                     = 18U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in1 input is selected */
+    kINPUTMUX_TrigIn2ToLPUART0                     = 19U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in2 input is selected */
+    kINPUTMUX_TrigIn3ToLPUART0                     = 20U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in3 input is selected */
+    kINPUTMUX_TrigIn4ToLPUART0                     = 21U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in4 input is selected */
+    kINPUTMUX_TrigIn5ToLPUART0                     = 22U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in5 input is selected */
+    kINPUTMUX_TrigIn6ToLPUART0                     = 23U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in6 input is selected */
+    kINPUTMUX_TrigIn7ToLPUART0                     = 24U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in7 input is selected */
+    kINPUTMUX_TrigIn8ToLPUART0                     = 25U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in8 input is selected */
+    kINPUTMUX_TrigIn9ToLPUART0                     = 26U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in9 input is selected */
+    kINPUTMUX_TrigIn10ToLPUART0                    = 27U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in10 input is selected */
+    kINPUTMUX_TrigIn11ToLPUART0                    = 28U + (LPUART0_REG << PMUX_SHIFT),  /*!< trig_in11 input is selected */
+    kINPUTMUX_Gpio1Pet0ToLPUART0                   = 30U + (LPUART0_REG << PMUX_SHIFT),  /*!< gpio1 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio2Pet0ToLPUART0                   = 31U + (LPUART0_REG << PMUX_SHIFT),  /*!< gpio2 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio3Pet0ToLPUART0                   = 32U + (LPUART0_REG << PMUX_SHIFT),  /*!< gpio3 pin event trig 0 input is selected */
+    kINPUTMUX_WuuSToLPUART0                        = 34U + (LPUART0_REG << PMUX_SHIFT),  /*!< wuu selected */
+
+    /*!< LPUART1: LPUART1 Trigger Input Connections */
+    kINPUTMUX_Cm33TeToLPUART1                      = 1U + (LPUART1_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUX_Aoi0Out0ToLPUART1                    = 2U + (LPUART1_REG << PMUX_SHIFT),  /*!< aoi0_out0 input is selected */
+    kINPUTMUX_Aoi0Out1ToLPUART1                    = 3U + (LPUART1_REG << PMUX_SHIFT),  /*!< aoi0_out1 input is selected */
+    kINPUTMUX_Aoi0Out2ToLPUART1                    = 4U + (LPUART1_REG << PMUX_SHIFT),  /*!< aoi0_out2 input is selected */
+    kINPUTMUX_Aoi0Out3ToLPUART1                    = 5U + (LPUART1_REG << PMUX_SHIFT),  /*!< aoi0_out3 input is selected */
+    kINPUTMUX_Cmp0OutToLPUART1                     = 6U + (LPUART1_REG << PMUX_SHIFT),  /*!< cmp0_out input is selected */
+    kINPUTMUX_Ctimer0Mat2ToLPUART1                 = 9U + (LPUART1_REG << PMUX_SHIFT),  /*!< ctimer0_mat2 input is selected */
+    kINPUTMUX_Ctimer0Mat3ToLPUART1                 = 10U + (LPUART1_REG << PMUX_SHIFT),  /*!< ctimer0_mat3 input is selected */
+    kINPUTMUX_Ctimer1Mat2ToLPUART1                 = 11U + (LPUART1_REG << PMUX_SHIFT),  /*!< ctimer1_mat2 input is selected */
+    kINPUTMUX_Ctimer1Mat3ToLPUART1                 = 12U + (LPUART1_REG << PMUX_SHIFT),  /*!< ctimer1_mat3 input is selected */
+    kINPUTMUX_Ctimer2Mat2ToLPUART1                 = 13U + (LPUART1_REG << PMUX_SHIFT),  /*!< ctimer2_mat2 input is selected */
+    kINPUTMUX_Ctimer2Mat3ToLPUART1                 = 14U + (LPUART1_REG << PMUX_SHIFT),  /*!< ctimer2_mat3 input is selected */
+    kINPUTMUX_TrigIn0ToLPUART1                     = 17U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in0 input is selected */
+    kINPUTMUX_TrigIn1ToLPUART1                     = 18U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in1 input is selected */
+    kINPUTMUX_TrigIn2ToLPUART1                     = 19U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in2 input is selected */
+    kINPUTMUX_TrigIn3ToLPUART1                     = 20U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in3 input is selected */
+    kINPUTMUX_TrigIn4ToLPUART1                     = 21U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in4 input is selected */
+    kINPUTMUX_TrigIn5ToLPUART1                     = 22U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in5 input is selected */
+    kINPUTMUX_TrigIn6ToLPUART1                     = 23U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in6 input is selected */
+    kINPUTMUX_TrigIn7ToLPUART1                     = 24U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in7 input is selected */
+    kINPUTMUX_TrigIn8ToLPUART1                     = 25U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in8 input is selected */
+    kINPUTMUX_TrigIn9ToLPUART1                     = 26U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in9 input is selected */
+    kINPUTMUX_TrigIn10ToLPUART1                    = 27U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in10 input is selected */
+    kINPUTMUX_TrigIn11ToLPUART1                    = 28U + (LPUART1_REG << PMUX_SHIFT),  /*!< trig_in11 input is selected */
+    kINPUTMUX_Gpio1Pet0ToLPUART1                   = 30U + (LPUART1_REG << PMUX_SHIFT),  /*!< gpio1 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio2Pet0ToLPUART1                   = 31U + (LPUART1_REG << PMUX_SHIFT),  /*!< gpio2 pin event trig 0 input is selected */
+    kINPUTMUX_Gpio3Pet0ToLPUART1                   = 32U + (LPUART1_REG << PMUX_SHIFT),  /*!< gpio3 pin event trig 0 input is selected */
+    kINPUTMUX_WuuSToLPUART1                        = 34U + (LPUART1_REG << PMUX_SHIFT),  /*!< wuu selected */
+
+
+
+#endif /* Building on the main core */
+    /*!< QTMR0_TMRn: QTMR0 Input Connections */
+    kINPUTMUXAON_AonTrigIn0ToQtmr0Tmrn                = 1U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToQtmr0Tmrn                = 2U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToQtmr0Tmrn                = 3U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToQtmr0Tmrn                = 4U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToQtmr0Tmrn                = 5U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToQtmr0Tmrn                = 6U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToQtmr0Tmrn                = 7U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToQtmr0Tmrn                = 8U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToQtmr0Tmrn                    = 9U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToQtmr0Tmrn             = 10U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToQtmr0Tmrn             = 11U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToQtmr0Tmrn             = 12U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToQtmr0Tmrn             = 13U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_Cmp0OutToQtmr0Tmrn                   = 14U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUXAON_Lpi2c0CeopToQtmr0Tmrn                = 16U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet is selected */
+    kINPUTMUXAON_Lpi2c0TeopToQtmr0Tmrn                = 17U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet is selected */
+    kINPUTMUXAON_Lpuart0RdwToQtmr0Tmrn                = 20U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lpuart0 received data word is selected */
+    kINPUTMUXAON_Lpuart0TdwToQtmr0Tmrn                = 21U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word is selected */
+    kINPUTMUXAON_Lpuart0RliToQtmr0Tmrn                = 22U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToQtmr0Tmrn = 26U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToQtmr0Tmrn = 27U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToQtmr0Tmrn = 28U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToQtmr0Tmrn = 29U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_Lptmr0OToQtmr0Tmrn                   = 30U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lptmr0 output is selected */
+    kINPUTMUXAON_LcRotSocLogicOut1ToQtmr0Tmrn         = 32U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out1 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut2ToQtmr0Tmrn         = 33U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out2 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut3ToQtmr0Tmrn         = 34U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out3 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut4ToQtmr0Tmrn         = 35U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out4 is selected */
+    kINPUTMUXAON_Qtmr0Counter0dirToQtmr0Tmrn          = 36U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter1dirToQtmr0Tmrn          = 37U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter2dirToQtmr0Tmrn          = 38U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter3dirToQtmr0Tmrn          = 39U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[3] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter0dirToQtmr0Tmrn          = 40U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter1dirToQtmr0Tmrn          = 41U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter2dirToQtmr0Tmrn          = 42U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter3dirToQtmr0Tmrn          = 43U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[3] direction is selected */
+    kINPUTMUXAON_Acmp0RacoToQtmr0Tmrn                 = 44U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToQtmr0Tmrn              = 45U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_Logic0ToQtmr0Tmrn                    = 46U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< logic_0 is selected */
+    kINPUTMUXAON_Logic1ToQtmr0Tmrn                    = 47U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< logic_1 is selected */
+    kINPUTMUXAON_WuuOToQtmr0Tmrn                      = 48U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToQtmr0Tmrn                 = 49U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 input is selected */
+    kINPUTMUXAON_SocGlueXor0OutToQtmr0Tmrn            = 51U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToQtmr0Tmrn             = 53U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToQtmr0Tmrn             = 54U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToQtmr0Tmrn             = 55U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToQtmr0Tmrn             = 56U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_LcsenseSequencerPrimaryTriggerGlueOutToQtmr0Tmrn = 57U + (QTMR0_TMRn_REG << PMUX_SHIFT),  /*!< lcsense_sequencer_primary_trigger_glue_out is selected */
+
+    /*!< SOC_GLUE_XOR0_INn: SOC_GLUE_XOR0 trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToSocGlueXor0Inn           = 1U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToSocGlueXor0Inn           = 2U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToSocGlueXor0Inn           = 3U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToSocGlueXor0Inn           = 4U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToSocGlueXor0Inn           = 5U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToSocGlueXor0Inn           = 6U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToSocGlueXor0Inn           = 7U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToSocGlueXor0Inn           = 8U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToSocGlueXor0Inn               = 9U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToSocGlueXor0Inn        = 10U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToSocGlueXor0Inn        = 11U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToSocGlueXor0Inn        = 12U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToSocGlueXor0Inn        = 13U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_Cmp0OutToSocGlueXor0Inn              = 14U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUXAON_Lpi2c0CeopToSocGlueXor0Inn           = 16U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet is selected */
+    kINPUTMUXAON_Lpi2c0TeopToSocGlueXor0Inn           = 17U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet is selected */
+    kINPUTMUXAON_Lpuart0RdwToSocGlueXor0Inn           = 20U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lpuart0 received data word is selected */
+    kINPUTMUXAON_Lpuart0TdwToSocGlueXor0Inn           = 21U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word is selected */
+    kINPUTMUXAON_Lpuart0RliToSocGlueXor0Inn           = 22U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToSocGlueXor0Inn = 26U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToSocGlueXor0Inn = 27U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToSocGlueXor0Inn = 28U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToSocGlueXor0Inn = 29U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_AonLptmr0OToSocGlueXor0Inn           = 30U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_LcRotSocLogicOut1ToSocGlueXor0Inn    = 32U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out1 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut2ToSocGlueXor0Inn    = 33U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out2 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut3ToSocGlueXor0Inn    = 34U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out3 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut4ToSocGlueXor0Inn    = 35U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out4 is selected */
+    kINPUTMUXAON_Qtmr0Counter0dirToSocGlueXor0Inn     = 36U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter1dirToSocGlueXor0Inn     = 37U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter2dirToSocGlueXor0Inn     = 38U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter3dirToSocGlueXor0Inn     = 39U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[3] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter0dirToSocGlueXor0Inn     = 40U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter1dirToSocGlueXor0Inn     = 41U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter2dirToSocGlueXor0Inn     = 42U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter3dirToSocGlueXor0Inn     = 43U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[3] direction is selected */
+    kINPUTMUXAON_Acmp0RacoToSocGlueXor0Inn            = 44U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToSocGlueXor0Inn         = 45U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_Logic0ToSocGlueXor0Inn               = 46U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< logic_0 is selected */
+    kINPUTMUXAON_Logic1ToSocGlueXor0Inn               = 47U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< logic_1 is selected */
+    kINPUTMUXAON_WuuOToSocGlueXor0Inn                 = 48U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToSocGlueXor0Inn            = 49U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 input is selected */
+    kINPUTMUXAON_SocGlueXor0OutToSocGlueXor0Inn       = 51U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToSocGlueXor0Inn        = 53U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToSocGlueXor0Inn        = 54U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToSocGlueXor0Inn        = 55U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToSocGlueXor0Inn        = 56U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_LcsenseSequencerPrimaryTriggerGlueOutToSocGlueXor0Inn = 57U + (SOC_GLUE_XOR0_INn_REG << PMUX_SHIFT),  /*!< lcsense_sequencer_primary_trigger_glue_out is selected */
+
+    /*!< QTMR1_TMRn: QTMR1 Input Connections */
+    kINPUTMUXAON_AonTrigIn0ToQtmr1Tmrn                = 1U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToQtmr1Tmrn                = 2U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToQtmr1Tmrn                = 3U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToQtmr1Tmrn                = 4U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToQtmr1Tmrn                = 5U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToQtmr1Tmrn                = 6U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToQtmr1Tmrn                = 7U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToQtmr1Tmrn                = 8U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToQtmr1Tmrn                    = 9U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToQtmr1Tmrn             = 10U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToQtmr1Tmrn             = 11U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToQtmr1Tmrn             = 12U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToQtmr1Tmrn             = 13U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_Cmp0OutToQtmr1Tmrn                   = 14U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUXAON_Lpi2c0CeopToQtmr1Tmrn                = 16U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet is selected */
+    kINPUTMUXAON_Lpi2c0TeopToQtmr1Tmrn                = 17U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet is selected */
+    kINPUTMUXAON_Lpuart0RdwToQtmr1Tmrn                = 20U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lpuart0 received data word is selected */
+    kINPUTMUXAON_Lpuart0TdwToQtmr1Tmrn                = 21U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word is selected */
+    kINPUTMUXAON_Lpuart0RliToQtmr1Tmrn                = 22U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToQtmr1Tmrn = 26U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToQtmr1Tmrn = 27U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToQtmr1Tmrn = 28U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToQtmr1Tmrn = 29U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_AonLptmr0OToQtmr1Tmrn                = 30U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_LcRotSocLogicOut1ToQtmr1Tmrn         = 32U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out1 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut2ToQtmr1Tmrn         = 33U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out2 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut3ToQtmr1Tmrn         = 34U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out3 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut4ToQtmr1Tmrn         = 35U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out4 is selected */
+    kINPUTMUXAON_Qtmr0Counter0dirToQtmr1Tmrn          = 36U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter1dirToQtmr1Tmrn          = 37U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter2dirToQtmr1Tmrn          = 38U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter3dirToQtmr1Tmrn          = 39U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr0 counter[3] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter0dirToQtmr1Tmrn          = 40U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter1dirToQtmr1Tmrn          = 41U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter2dirToQtmr1Tmrn          = 42U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter3dirToQtmr1Tmrn          = 43U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 counter[3] direction is selected */
+    kINPUTMUXAON_Acmp0RacoToQtmr1Tmrn                 = 44U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToQtmr1Tmrn              = 45U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_Logic0ToQtmr1Tmrn                    = 46U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< logic_0 is selected */
+    kINPUTMUXAON_Logic1ToQtmr1Tmrn                    = 47U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< logic_1 is selected */
+    kINPUTMUXAON_WuuOToQtmr1Tmrn                      = 48U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToQtmr1Tmrn                 = 49U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 input is selected */
+    kINPUTMUXAON_SocGlueXor0OutToQtmr1Tmrn            = 51U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToQtmr1Tmrn             = 53U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToQtmr1Tmrn             = 54U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToQtmr1Tmrn             = 55U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToQtmr1Tmrn             = 56U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_LcsenseSequencerPrimaryTriggerGlueOutToQtmr1Tmrn = 57U + (QTMR1_TMRn_REG << PMUX_SHIFT),  /*!< lcsense_sequencer_primary_trigger_glue_out is selected */
+
+    /*!< LPACMP0_TRIGn: LPACMP0 Input Connections */
+    kINPUTMUXAON_AonTrigIn0ToLpacmp0Trign             = 1U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToLpacmp0Trign             = 2U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToLpacmp0Trign             = 3U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToLpacmp0Trign             = 4U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToLpacmp0Trign             = 5U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToLpacmp0Trign             = 6U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToLpacmp0Trign             = 7U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToLpacmp0Trign             = 8U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToLpacmp0Trign                 = 9U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToLpacmp0Trign          = 12U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToLpacmp0Trign          = 13U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToLpacmp0Trign          = 14U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToLpacmp0Trign          = 15U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_AonLptmr0OToLpacmp0Trign             = 16U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToLpacmp0Trign          = 18U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToLpacmp0Trign          = 19U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToLpacmp0Trign          = 20U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToLpacmp0Trign          = 21U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_WuuOToLpacmp0Trign                   = 23U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToLpacmp0Trign              = 24U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToLpacmp0Trign = 26U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToLpacmp0Trign = 27U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToLpacmp0Trign = 28U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToLpacmp0Trign = 29U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_Acmp0RacoToLpacmp0Trign              = 30U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToLpacmp0Trign           = 31U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_SocGlueXor0OutToLpacmp0Trign         = 34U + (LPACMP0_TRIGn_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+
+    /*!< LPADC0_TRIGn: LPADC trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToLpadc0Trign              = 1U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in0 is selected */
+    kINPUTMUXAON_AonTrigIn1ToLpadc0Trign              = 2U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in1 is selected */
+    kINPUTMUXAON_AonTrigIn2ToLpadc0Trign              = 3U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in2 is selected */
+    kINPUTMUXAON_AonTrigIn03ToLpadc0Trign             = 4U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in03 is selected */
+    kINPUTMUXAON_AonTrigIn04ToLpadc0Trign             = 5U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in04 is selected */
+    kINPUTMUXAON_AonTrigIn5ToLpadc0Trign              = 6U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in5 is selected */
+    kINPUTMUXAON_AonTrigIn6ToLpadc0Trign              = 7U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in6 is selected */
+    kINPUTMUXAON_AonTrigIn7ToLpadc0Trign              = 8U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aon_trig_in7 is selected */
+    kINPUTMUXAON_Cm33TeToLpadc0Trign                  = 9U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_LpcmpOutToLpadc0Trign                = 10U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< lpcmp_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToLpadc0Trign           = 12U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToLpadc0Trign           = 13U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToLpadc0Trign           = 14U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToLpadc0Trign           = 15U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_AonLptmr0OToLpadc0Trign              = 16U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToLpadc0Trign           = 18U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToLpadc0Trign           = 19U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToLpadc0Trign           = 20U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToLpadc0Trign           = 21U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_WuuOToLpadc0Trign                    = 23U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToLpadc0Trign               = 24U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 is selected */
+    kINPUTMUXAON_Acmp0RacoToLpadc0Trign               = 25U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToLpadc0Trign            = 26U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_SocGlueXor0OutToLpadc0Trign          = 29U + (LPADC0_TRIGn_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+
+    /*!< AON_TRIG_OUTn: AON Trigger Output Connections */
+    kINPUTMUXAON_Cm33TeToAonTrigOutn                  = 1U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_AonLpuart0ToAonTrigOutn              = 2U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< aon_lpuart0 */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToAonTrigOutn = 8U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToAonTrigOutn = 9U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToAonTrigOutn = 10U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_ParkedOutIntvertedToAonTrigOutn      = 11U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< parked_out_intverted is selected */
+    kINPUTMUXAON_AonLptmr0OToAonTrigOutn              = 12U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_Lpcomp0OutToAonTrigOutn              = 14U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< lpcomp0_out is selected */
+    kINPUTMUXAON_Acmp0RacoToAonTrigOutn               = 16U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToAonTrigOutn            = 17U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToAonTrigOutn           = 20U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToAonTrigOutn           = 21U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToAonTrigOutn           = 22U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToAonTrigOutn           = 23U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToAonTrigOutn           = 24U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToAonTrigOutn           = 25U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToAonTrigOutn           = 26U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToAonTrigOutn           = 27U + (AON_TRIG_OUTn_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+
+    /*!< SOC_GLUE_CMPPADS_PCTRL_XOR_IN0: SOC_GLUE_CMPPADS_PCTRL_XOR_IN0 trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToSocGlueCmppadsPctrlXorIn0 = 1U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToSocGlueCmppadsPctrlXorIn0 = 2U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToSocGlueCmppadsPctrlXorIn0 = 3U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToSocGlueCmppadsPctrlXorIn0 = 4U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToSocGlueCmppadsPctrlXorIn0 = 5U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToSocGlueCmppadsPctrlXorIn0 = 6U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToSocGlueCmppadsPctrlXorIn0 = 7U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToSocGlueCmppadsPctrlXorIn0 = 8U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToSocGlueCmppadsPctrlXorIn0    = 9U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToSocGlueCmppadsPctrlXorIn0 = 10U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToSocGlueCmppadsPctrlXorIn0 = 11U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToSocGlueCmppadsPctrlXorIn0 = 12U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToSocGlueCmppadsPctrlXorIn0 = 13U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_Cmp0OutToSocGlueCmppadsPctrlXorIn0   = 14U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUXAON_Lpi2c0CeopToSocGlueCmppadsPctrlXorIn0 = 16U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet is selected */
+    kINPUTMUXAON_Lpi2c0TeopToSocGlueCmppadsPctrlXorIn0 = 17U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet is selected */
+    kINPUTMUXAON_Lpuart0RdwToSocGlueCmppadsPctrlXorIn0 = 20U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpuart0 received data word is selected */
+    kINPUTMUXAON_Lpuart0TdwToSocGlueCmppadsPctrlXorIn0 = 21U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word is selected */
+    kINPUTMUXAON_Lpuart0RliToSocGlueCmppadsPctrlXorIn0 = 22U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToSocGlueCmppadsPctrlXorIn0 = 26U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToSocGlueCmppadsPctrlXorIn0 = 27U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToSocGlueCmppadsPctrlXorIn0 = 28U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToSocGlueCmppadsPctrlXorIn0 = 29U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_AonLptmr0OToSocGlueCmppadsPctrlXorIn0 = 30U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_LcRotSocLogicOut1ToSocGlueCmppadsPctrlXorIn0 = 32U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out1 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut2ToSocGlueCmppadsPctrlXorIn0 = 33U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out2 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut3ToSocGlueCmppadsPctrlXorIn0 = 34U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out3 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut4ToSocGlueCmppadsPctrlXorIn0 = 35U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out4 is selected */
+    kINPUTMUXAON_Qtmr0Counter0dirToSocGlueCmppadsPctrlXorIn0 = 36U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter1dirToSocGlueCmppadsPctrlXorIn0 = 37U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter2dirToSocGlueCmppadsPctrlXorIn0 = 38U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter3dirToSocGlueCmppadsPctrlXorIn0 = 39U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 counter[3] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter0dirToSocGlueCmppadsPctrlXorIn0 = 40U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter1dirToSocGlueCmppadsPctrlXorIn0 = 41U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter2dirToSocGlueCmppadsPctrlXorIn0 = 42U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter3dirToSocGlueCmppadsPctrlXorIn0 = 43U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 counter[3] direction is selected */
+    kINPUTMUXAON_Acmp0RacoToSocGlueCmppadsPctrlXorIn0 = 44U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToSocGlueCmppadsPctrlXorIn0 = 45U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_Logic0ToSocGlueCmppadsPctrlXorIn0    = 46U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< logic_0 is selected */
+    kINPUTMUXAON_Logic1ToSocGlueCmppadsPctrlXorIn0    = 47U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< logic_1 is selected */
+    kINPUTMUXAON_WuuOToSocGlueCmppadsPctrlXorIn0      = 48U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToSocGlueCmppadsPctrlXorIn0 = 49U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 input is selected */
+    kINPUTMUXAON_SocGlueXor0OutToSocGlueCmppadsPctrlXorIn0 = 51U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToSocGlueCmppadsPctrlXorIn0 = 53U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToSocGlueCmppadsPctrlXorIn0 = 54U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToSocGlueCmppadsPctrlXorIn0 = 55U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToSocGlueCmppadsPctrlXorIn0 = 56U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_LcsenseSequencerPrimaryTriggerGlueOutToSocGlueCmppadsPctrlXorIn0 = 57U + (SOC_GLUE_CMPPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lcsense_sequencer_primary_trigger_glue_out is selected */
+
+    /*!< SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0: SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0 trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToSocGlueCtrlpadsPctrlXorIn0 = 1U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToSocGlueCtrlpadsPctrlXorIn0 = 2U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToSocGlueCtrlpadsPctrlXorIn0 = 3U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToSocGlueCtrlpadsPctrlXorIn0 = 4U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToSocGlueCtrlpadsPctrlXorIn0 = 5U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToSocGlueCtrlpadsPctrlXorIn0 = 6U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToSocGlueCtrlpadsPctrlXorIn0 = 7U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToSocGlueCtrlpadsPctrlXorIn0 = 8U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToSocGlueCtrlpadsPctrlXorIn0   = 9U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToSocGlueCtrlpadsPctrlXorIn0 = 10U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToSocGlueCtrlpadsPctrlXorIn0 = 11U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToSocGlueCtrlpadsPctrlXorIn0 = 12U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToSocGlueCtrlpadsPctrlXorIn0 = 13U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_Cmp0OutToSocGlueCtrlpadsPctrlXorIn0  = 14U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUXAON_Lpi2c0CeopToSocGlueCtrlpadsPctrlXorIn0 = 16U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet is selected */
+    kINPUTMUXAON_Lpi2c0TeopToSocGlueCtrlpadsPctrlXorIn0 = 17U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet is selected */
+    kINPUTMUXAON_Lpuart0RdwToSocGlueCtrlpadsPctrlXorIn0 = 20U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpuart0 received data word is selected */
+    kINPUTMUXAON_Lpuart0TdwToSocGlueCtrlpadsPctrlXorIn0 = 21U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word is selected */
+    kINPUTMUXAON_Lpuart0RliToSocGlueCtrlpadsPctrlXorIn0 = 22U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToSocGlueCtrlpadsPctrlXorIn0 = 26U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToSocGlueCtrlpadsPctrlXorIn0 = 27U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToSocGlueCtrlpadsPctrlXorIn0 = 28U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToSocGlueCtrlpadsPctrlXorIn0 = 29U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_AonLptmr0OToSocGlueCtrlpadsPctrlXorIn0 = 30U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_LcRotSocLogicOut1ToSocGlueCtrlpadsPctrlXorIn0 = 32U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out1 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut2ToSocGlueCtrlpadsPctrlXorIn0 = 33U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out2 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut3ToSocGlueCtrlpadsPctrlXorIn0 = 34U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out3 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut4ToSocGlueCtrlpadsPctrlXorIn0 = 35U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out4 is selected */
+    kINPUTMUXAON_Qtmr0Counter0dirToSocGlueCtrlpadsPctrlXorIn0 = 36U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter1dirToSocGlueCtrlpadsPctrlXorIn0 = 37U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter2dirToSocGlueCtrlpadsPctrlXorIn0 = 38U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter3dirToSocGlueCtrlpadsPctrlXorIn0 = 39U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 counter[3] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter0dirToSocGlueCtrlpadsPctrlXorIn0 = 40U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter1dirToSocGlueCtrlpadsPctrlXorIn0 = 41U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter2dirToSocGlueCtrlpadsPctrlXorIn0 = 42U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter3dirToSocGlueCtrlpadsPctrlXorIn0 = 43U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr1 counter[3] direction is selected */
+    kINPUTMUXAON_Acmp0RacoToSocGlueCtrlpadsPctrlXorIn0 = 44U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToSocGlueCtrlpadsPctrlXorIn0 = 45U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_Logic0ToSocGlueCtrlpadsPctrlXorIn0   = 46U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< logic_0 is selected */
+    kINPUTMUXAON_Logic1ToSocGlueCtrlpadsPctrlXorIn0   = 47U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< logic_1 is selected */
+    kINPUTMUXAON_WuuOToSocGlueCtrlpadsPctrlXorIn0     = 48U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToSocGlueCtrlpadsPctrlXorIn0 = 49U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 input is selected */
+    kINPUTMUXAON_SocGlueXor0OutToSocGlueCtrlpadsPctrlXorIn0 = 51U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToSocGlueCtrlpadsPctrlXorIn0 = 53U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToSocGlueCtrlpadsPctrlXorIn0 = 54U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToSocGlueCtrlpadsPctrlXorIn0 = 55U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToSocGlueCtrlpadsPctrlXorIn0 = 56U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_LcsenseSequencerPrimaryTriggerGlueOutToSocGlueCtrlpadsPctrlXorIn0 = 57U + (SOC_GLUE_CTRLPADS_PCTRL_XOR_IN0_REG << PMUX_SHIFT),  /*!< lcsense_sequencer_primary_trigger_glue_out is selected */
+
+    /*!< LC_ROT_SOC_LOGIC_IN: LC_ROT_SOC_LOGIC_IN trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToLcRotSocLogicIn          = 1U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToLcRotSocLogicIn          = 2U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToLcRotSocLogicIn          = 3U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToLcRotSocLogicIn          = 4U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToLcRotSocLogicIn          = 5U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToLcRotSocLogicIn          = 6U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToLcRotSocLogicIn          = 7U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToLcRotSocLogicIn          = 8U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToLcRotSocLogicIn              = 9U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToLcRotSocLogicIn       = 10U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToLcRotSocLogicIn       = 11U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToLcRotSocLogicIn       = 12U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToLcRotSocLogicIn       = 13U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_Cmp0OutToLcRotSocLogicIn             = 14U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUXAON_Lpi2c0CeopToLcRotSocLogicIn          = 16U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet is selected */
+    kINPUTMUXAON_Lpi2c0TeopToLcRotSocLogicIn          = 17U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet is selected */
+    kINPUTMUXAON_Lpuart0RdwToLcRotSocLogicIn          = 20U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lpuart0 received data word is selected */
+    kINPUTMUXAON_Lpuart0TdwToLcRotSocLogicIn          = 21U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word is selected */
+    kINPUTMUXAON_Lpuart0RliToLcRotSocLogicIn          = 22U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToLcRotSocLogicIn = 26U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToLcRotSocLogicIn = 27U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToLcRotSocLogicIn = 28U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToLcRotSocLogicIn = 29U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_AonLptmr0OToLcRotSocLogicIn          = 30U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_LcRotSocLogicOut1ToLcRotSocLogicIn   = 32U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out1 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut2ToLcRotSocLogicIn   = 33U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out2 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut3ToLcRotSocLogicIn   = 34U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out3 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut4ToLcRotSocLogicIn   = 35U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out4 is selected */
+    kINPUTMUXAON_Qtmr0Counter0dirToLcRotSocLogicIn    = 36U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter1dirToLcRotSocLogicIn    = 37U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter2dirToLcRotSocLogicIn    = 38U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter3dirToLcRotSocLogicIn    = 39U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[3] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter0dirToLcRotSocLogicIn    = 40U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter1dirToLcRotSocLogicIn    = 41U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter2dirToLcRotSocLogicIn    = 42U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter3dirToLcRotSocLogicIn    = 43U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[3] direction is selected */
+    kINPUTMUXAON_Acmp0RacoToLcRotSocLogicIn           = 44U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToLcRotSocLogicIn        = 45U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_Logic0ToLcRotSocLogicIn              = 46U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< logic_0 is selected */
+    kINPUTMUXAON_Logic1ToLcRotSocLogicIn              = 47U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< logic_1 is selected */
+    kINPUTMUXAON_WuuOToLcRotSocLogicIn                = 48U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToLcRotSocLogicIn           = 49U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 input is selected */
+    kINPUTMUXAON_SocGlueXor0OutToLcRotSocLogicIn      = 51U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToLcRotSocLogicIn       = 53U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToLcRotSocLogicIn       = 54U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToLcRotSocLogicIn       = 55U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToLcRotSocLogicIn       = 56U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_LcsenseSequencerPrimaryTriggerGlueOutToLcRotSocLogicIn = 57U + (LC_ROT_SOC_LOGIC_IN_REG << PMUX_SHIFT),  /*!< lcsense_sequencer_primary_trigger_glue_out is selected */
+
+    /*!< LCSENSE_SEQ_PTRIG_GLUE_IN: LCSENSE_SEQ_PTRIG_GLUE_IN trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToLcsenseSeqPtrigGlueIn    = 1U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToLcsenseSeqPtrigGlueIn    = 2U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToLcsenseSeqPtrigGlueIn    = 3U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToLcsenseSeqPtrigGlueIn    = 4U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToLcsenseSeqPtrigGlueIn    = 5U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToLcsenseSeqPtrigGlueIn    = 6U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToLcsenseSeqPtrigGlueIn    = 7U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToLcsenseSeqPtrigGlueIn    = 8U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToLcsenseSeqPtrigGlueIn        = 9U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToLcsenseSeqPtrigGlueIn = 10U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToLcsenseSeqPtrigGlueIn = 11U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToLcsenseSeqPtrigGlueIn = 12U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToLcsenseSeqPtrigGlueIn = 13U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_Cmp0OutToLcsenseSeqPtrigGlueIn       = 14U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUXAON_Lpi2c0CeopToLcsenseSeqPtrigGlueIn    = 16U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet is selected */
+    kINPUTMUXAON_Lpi2c0TeopToLcsenseSeqPtrigGlueIn    = 17U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet is selected */
+    kINPUTMUXAON_Lpuart0RdwToLcsenseSeqPtrigGlueIn    = 20U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpuart0 received data word is selected */
+    kINPUTMUXAON_Lpuart0TdwToLcsenseSeqPtrigGlueIn    = 21U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word is selected */
+    kINPUTMUXAON_Lpuart0RliToLcsenseSeqPtrigGlueIn    = 22U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToLcsenseSeqPtrigGlueIn = 26U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToLcsenseSeqPtrigGlueIn = 27U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToLcsenseSeqPtrigGlueIn = 28U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToLcsenseSeqPtrigGlueIn = 29U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_AonLptmr0OToLcsenseSeqPtrigGlueIn    = 30U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_LcRotSocLogicOut1ToLcsenseSeqPtrigGlueIn = 32U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out1 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut2ToLcsenseSeqPtrigGlueIn = 33U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out2 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut3ToLcsenseSeqPtrigGlueIn = 34U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out3 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut4ToLcsenseSeqPtrigGlueIn = 35U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out4 is selected */
+    kINPUTMUXAON_Qtmr0Counter0dirToLcsenseSeqPtrigGlueIn = 36U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter1dirToLcsenseSeqPtrigGlueIn = 37U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter2dirToLcsenseSeqPtrigGlueIn = 38U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter3dirToLcsenseSeqPtrigGlueIn = 39U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[3] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter0dirToLcsenseSeqPtrigGlueIn = 40U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter1dirToLcsenseSeqPtrigGlueIn = 41U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter2dirToLcsenseSeqPtrigGlueIn = 42U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter3dirToLcsenseSeqPtrigGlueIn = 43U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[3] direction is selected */
+    kINPUTMUXAON_Acmp0RacoToLcsenseSeqPtrigGlueIn     = 44U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToLcsenseSeqPtrigGlueIn  = 45U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_Logic0ToLcsenseSeqPtrigGlueIn        = 46U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< logic_0 is selected */
+    kINPUTMUXAON_Logic1ToLcsenseSeqPtrigGlueIn        = 47U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< logic_1 is selected */
+    kINPUTMUXAON_WuuOToLcsenseSeqPtrigGlueIn          = 48U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToLcsenseSeqPtrigGlueIn     = 49U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 input is selected */
+    kINPUTMUXAON_SocGlueXor0OutToLcsenseSeqPtrigGlueIn = 51U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToLcsenseSeqPtrigGlueIn = 53U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToLcsenseSeqPtrigGlueIn = 54U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToLcsenseSeqPtrigGlueIn = 55U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToLcsenseSeqPtrigGlueIn = 56U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_LcsenseSequencerPrimaryTriggerGlueOutToLcsenseSeqPtrigGlueIn = 57U + (LCSENSE_SEQ_PTRIG_GLUE_IN_REG << PMUX_SHIFT),  /*!< lcsense_sequencer_primary_trigger_glue_out is selected */
+
+    /*!< LCSENSE_SEQ_TICKS_GLUE_IN: LCSENSE_SEQ_TICKS_GLUE_IN trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToLcsenseSeqTicksGlueIn    = 1U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToLcsenseSeqTicksGlueIn    = 2U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToLcsenseSeqTicksGlueIn    = 3U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToLcsenseSeqTicksGlueIn    = 4U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToLcsenseSeqTicksGlueIn    = 5U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToLcsenseSeqTicksGlueIn    = 6U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToLcsenseSeqTicksGlueIn    = 7U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToLcsenseSeqTicksGlueIn    = 8U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToLcsenseSeqTicksGlueIn        = 9U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToLcsenseSeqTicksGlueIn = 10U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToLcsenseSeqTicksGlueIn = 11U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToLcsenseSeqTicksGlueIn = 12U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToLcsenseSeqTicksGlueIn = 13U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_Cmp0OutToLcsenseSeqTicksGlueIn       = 14U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< cmp0_out is selected */
+    kINPUTMUXAON_Lpi2c0CeopToLcsenseSeqTicksGlueIn    = 16U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpi2c0 controller end of packet is selected */
+    kINPUTMUXAON_Lpi2c0TeopToLcsenseSeqTicksGlueIn    = 17U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpi2c0 target end of packet is selected */
+    kINPUTMUXAON_Lpuart0RdwToLcsenseSeqTicksGlueIn    = 20U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpuart0 received data word is selected */
+    kINPUTMUXAON_Lpuart0TdwToLcsenseSeqTicksGlueIn    = 21U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpuart0 transmitted data word is selected */
+    kINPUTMUXAON_Lpuart0RliToLcsenseSeqTicksGlueIn    = 22U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpuart0 receive line idle is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToLcsenseSeqTicksGlueIn = 26U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToLcsenseSeqTicksGlueIn = 27U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToLcsenseSeqTicksGlueIn = 28U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToLcsenseSeqTicksGlueIn = 29U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_AonLptmr0OToLcsenseSeqTicksGlueIn    = 30U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_LcRotSocLogicOut1ToLcsenseSeqTicksGlueIn = 32U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out1 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut2ToLcsenseSeqTicksGlueIn = 33U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out2 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut3ToLcsenseSeqTicksGlueIn = 34U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out3 is selected */
+    kINPUTMUXAON_LcRotSocLogicOut4ToLcsenseSeqTicksGlueIn = 35U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lc_rot_soc_logic_out4 is selected */
+    kINPUTMUXAON_Qtmr0Counter0dirToLcsenseSeqTicksGlueIn = 36U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter1dirToLcsenseSeqTicksGlueIn = 37U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter2dirToLcsenseSeqTicksGlueIn = 38U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr0Counter3dirToLcsenseSeqTicksGlueIn = 39U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 counter[3] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter0dirToLcsenseSeqTicksGlueIn = 40U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[0] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter1dirToLcsenseSeqTicksGlueIn = 41U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[1] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter2dirToLcsenseSeqTicksGlueIn = 42U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[2] direction is selected */
+    kINPUTMUXAON_Qtmr1Counter3dirToLcsenseSeqTicksGlueIn = 43U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr1 counter[3] direction is selected */
+    kINPUTMUXAON_Acmp0RacoToLcsenseSeqTicksGlueIn     = 44U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToLcsenseSeqTicksGlueIn  = 45U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_Logic0ToLcsenseSeqTicksGlueIn        = 46U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< logic_0 is selected */
+    kINPUTMUXAON_Logic1ToLcsenseSeqTicksGlueIn        = 47U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< logic_1 is selected */
+    kINPUTMUXAON_WuuOToLcsenseSeqTicksGlueIn          = 48U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToLcsenseSeqTicksGlueIn     = 49U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 input is selected */
+    kINPUTMUXAON_SocGlueXor0OutToLcsenseSeqTicksGlueIn = 51U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToLcsenseSeqTicksGlueIn = 53U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToLcsenseSeqTicksGlueIn = 54U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToLcsenseSeqTicksGlueIn = 55U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToLcsenseSeqTicksGlueIn = 56U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_LcsenseSequencerPrimaryTriggerGlueOutToLcsenseSeqTicksGlueIn = 57U + (LCSENSE_SEQ_TICKS_GLUE_IN_REG << PMUX_SHIFT),  /*!< lcsense_sequencer_primary_trigger_glue_out is selected */
+
+    /*!< ACMP0_SAMPLE: ACMP0 SAMPLE trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToAcmp0Sample              = 1U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToAcmp0Sample              = 2U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToAcmp0Sample              = 3U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToAcmp0Sample              = 4U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToAcmp0Sample              = 5U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToAcmp0Sample              = 6U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToAcmp0Sample              = 7U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToAcmp0Sample              = 8U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToAcmp0Sample                  = 9U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_LpcmpOutToAcmp0Sample                = 10U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< lpcmp_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToAcmp0Sample           = 12U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToAcmp0Sample           = 13U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToAcmp0Sample           = 14U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToAcmp0Sample           = 15U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_AonLptmr0OToAcmp0Sample              = 16U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToAcmp0Sample           = 18U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToAcmp0Sample           = 19U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToAcmp0Sample           = 20U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToAcmp0Sample           = 21U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_WuuOToAcmp0Sample                    = 23U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToAcmp0Sample               = 24U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToAcmp0Sample = 26U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToAcmp0Sample = 27U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToAcmp0Sample = 28U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToAcmp0Sample = 29U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_SocGlueXor0OutToAcmp0Sample          = 34U + (ACMP0_SAMPLE_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+
+    /*!< ACMP0_RR_TRIG: ACMP0 RR trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToAcmp0RrTrig              = 1U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToAcmp0RrTrig              = 2U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToAcmp0RrTrig              = 3U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToAcmp0RrTrig              = 4U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToAcmp0RrTrig              = 5U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToAcmp0RrTrig              = 6U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToAcmp0RrTrig              = 7U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToAcmp0RrTrig              = 8U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToAcmp0RrTrig                  = 9U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_LpcmpOutToAcmp0RrTrig                = 10U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< lpcmp_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToAcmp0RrTrig           = 12U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToAcmp0RrTrig           = 13U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToAcmp0RrTrig           = 14U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToAcmp0RrTrig           = 15U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_AonLptmr0OToAcmp0RrTrig              = 16U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToAcmp0RrTrig           = 18U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToAcmp0RrTrig           = 19U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToAcmp0RrTrig           = 20U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToAcmp0RrTrig           = 21U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_WuuOToAcmp0RrTrig                    = 23U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToAcmp0RrTrig               = 24U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToAcmp0RrTrig = 26U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToAcmp0RrTrig = 27U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToAcmp0RrTrig = 28U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToAcmp0RrTrig = 29U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_SocGlueXor0OutToAcmp0RrTrig          = 34U + (ACMP0_RR_TRIG_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+
+    /*!< LPI2C0_TRIG: LPI2C0 trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToLpi2c0Trig               = 1U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToLpi2c0Trig               = 2U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToLpi2c0Trig               = 3U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToLpi2c0Trig               = 4U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToLpi2c0Trig               = 5U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToLpi2c0Trig               = 6U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToLpi2c0Trig               = 7U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToLpi2c0Trig               = 8U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToLpi2c0Trig                   = 9U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_LpcmpOutToLpi2c0Trig                 = 10U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< lpcmp_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToLpi2c0Trig            = 12U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToLpi2c0Trig            = 13U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToLpi2c0Trig            = 14U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToLpi2c0Trig            = 15U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_AonLptmr0OToLpi2c0Trig               = 16U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToLpi2c0Trig            = 18U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToLpi2c0Trig            = 19U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToLpi2c0Trig            = 20U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToLpi2c0Trig            = 21U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_WuuOToLpi2c0Trig                     = 23U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToLpi2c0Trig                = 24U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToLpi2c0Trig = 26U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToLpi2c0Trig = 27U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToLpi2c0Trig = 28U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToLpi2c0Trig = 29U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_Acmp0RacoToLpi2c0Trig                = 30U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToLpi2c0Trig             = 31U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_SocGlueXor0OutToLpi2c0Trig           = 34U + (LPI2C0_TRIG_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+
+    /*!< LPUART0: LPUART0 trigger input connections */
+    kINPUTMUXAON_AonTrigIn0ToLPUART0                  = 1U + (LPUART0_REG << PMUX_SHIFT),  /*!< aon_trig_in0 input is selected */
+    kINPUTMUXAON_AonTrigIn1ToLPUART0                  = 2U + (LPUART0_REG << PMUX_SHIFT),  /*!< aon_trig_in1 input is selected */
+    kINPUTMUXAON_AonTrigIn2ToLPUART0                  = 3U + (LPUART0_REG << PMUX_SHIFT),  /*!< aon_trig_in2 input is selected */
+    kINPUTMUXAON_AonTrigIn3ToLPUART0                  = 4U + (LPUART0_REG << PMUX_SHIFT),  /*!< aon_trig_in3 input is selected */
+    kINPUTMUXAON_AonTrigIn4ToLPUART0                  = 5U + (LPUART0_REG << PMUX_SHIFT),  /*!< aon_trig_in4 input is selected */
+    kINPUTMUXAON_AonTrigIn5ToLPUART0                  = 6U + (LPUART0_REG << PMUX_SHIFT),  /*!< aon_trig_in5 input is selected */
+    kINPUTMUXAON_AonTrigIn6ToLPUART0                  = 7U + (LPUART0_REG << PMUX_SHIFT),  /*!< aon_trig_in6 input is selected */
+    kINPUTMUXAON_AonTrigIn7ToLPUART0                  = 8U + (LPUART0_REG << PMUX_SHIFT),  /*!< aon_trig_in7 input is selected */
+    kINPUTMUXAON_Cm33TeToLPUART0                      = 9U + (LPUART0_REG << PMUX_SHIFT),  /*!< cm33 transmit event is selected */
+    kINPUTMUXAON_LpcmpOutToLPUART0                    = 10U + (LPUART0_REG << PMUX_SHIFT),  /*!< lpcmp_out is selected */
+    kINPUTMUXAON_Qtmr0Channel0ToLPUART0               = 12U + (LPUART0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr0Channel1ToLPUART0               = 13U + (LPUART0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr0Channel2ToLPUART0               = 14U + (LPUART0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr0Channel3ToLPUART0               = 15U + (LPUART0_REG << PMUX_SHIFT),  /*!< qtmr0 channel[3] output is selected */
+    kINPUTMUXAON_AonLptmr0OToLPUART0                  = 16U + (LPUART0_REG << PMUX_SHIFT),  /*!< aon.lptmr0 output is selected */
+    kINPUTMUXAON_Qtmr1Channel0ToLPUART0               = 18U + (LPUART0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[0] output is selected */
+    kINPUTMUXAON_Qtmr1Channel1ToLPUART0               = 19U + (LPUART0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[1] output is selected */
+    kINPUTMUXAON_Qtmr1Channel2ToLPUART0               = 20U + (LPUART0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[2] output is selected */
+    kINPUTMUXAON_Qtmr1Channel3ToLPUART0               = 21U + (LPUART0_REG << PMUX_SHIFT),  /*!< qtmr1 channel[3] output is selected */
+    kINPUTMUXAON_WuuOToLPUART0                        = 23U + (LPUART0_REG << PMUX_SHIFT),  /*!< wuu output is selected */
+    kINPUTMUXAON_GpioApet0ToLPUART0                   = 24U + (LPUART0_REG << PMUX_SHIFT),  /*!< gpio (aon) pin event trig 0 is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput0ToLPUART0 = 26U + (LPUART0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[0] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput1ToLPUART0 = 27U + (LPUART0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[1] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput2ToLPUART0 = 28U + (LPUART0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[2] is selected */
+    kINPUTMUXAON_LpadcTriggerCompletePulseOutput3ToLPUART0 = 29U + (LPUART0_REG << PMUX_SHIFT),  /*!< lpadc trigger complete pulse output[3] is selected */
+    kINPUTMUXAON_Acmp0RacoToLPUART0                   = 30U + (LPUART0_REG << PMUX_SHIFT),  /*!< acmp0 raw analog comparator output */
+    kINPUTMUXAON_Acmp0AonCoutToLPUART0                = 31U + (LPUART0_REG << PMUX_SHIFT),  /*!< acmp0_aon_cout is selected */
+    kINPUTMUXAON_SocGlueXor0OutToLPUART0              = 34U + (LPUART0_REG << PMUX_SHIFT),  /*!< soc_glue_xor0_out is selected */
+
+} inputmux_connection_t;
+
+/*@}*/
+
+/*@}*/
+
+#endif /* _FSL_INPUTMUX_CONNECTIONS_ */

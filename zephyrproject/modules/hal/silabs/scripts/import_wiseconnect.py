@@ -1,0 +1,413 @@
+#!/usr/bin/env python3
+
+"""
+Copyright (c) 2024 Silicon Laboratories Inc.
+
+SPDX-License-Identifier: Apache-2.0
+"""
+
+import argparse
+import os
+import re
+import io
+import sys
+import hashlib
+import shutil
+import tempfile
+import subprocess
+import textwrap
+from pathlib import Path
+from ruamel import yaml
+
+paths = [
+    "license.md",
+    "components/board/silabs/config/brd4342a/pin_config.h",
+    "components/board/silabs/config/brd4342a/RTE_Device_917.h",
+    "components/common/inc/sl_additional_status.h",
+    "components/common/inc/sl_cmsis_utility.h",
+    "components/common/inc/sl_constants.h",
+    "components/common/inc/sl_ieee802_types.h",
+    "components/common/inc/sl_ip_types.h",
+    "components/common/inc/sl_utility.h",
+    "components/common/src/sl_utility.c",
+    "components/device/silabs/si91x/mcu/core/chip/config/sl_board_configuration.h",
+    "components/device/silabs/si91x/mcu/core/chip/config/sl_si91x_psram_pin_config.h",
+    "components/device/silabs/si91x/mcu/core/chip/config/sl_sysrtc_board.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/base_types.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/data_types.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/em_device.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/rsi_ccp_common.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/rsi_error.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/rsi_ps_ram_func.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/rsi_system_config.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/si91x_device.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/si91x_mvp.h",
+    "components/device/silabs/si91x/mcu/core/chip/inc/system_si91x.h",
+    "components/device/silabs/si91x/mcu/core/chip/src/iPMU_prog/iPMU_dotc/ipmu_apis.c",
+    "components/device/silabs/si91x/mcu/core/chip/src/iPMU_prog/iPMU_dotc/rsi_system_config_917.c",
+    "components/device/silabs/si91x/mcu/core/chip/src/rsi_deepsleep_soc.c",
+    "components/device/silabs/si91x/mcu/core/chip/src/system_si91x.c",
+    "components/device/silabs/si91x/mcu/core/chip/src/rsi_ps_ram_func.c",
+    "components/device/silabs/si91x/mcu/core/common/inc/sl_si91x_os.h",
+    "components/device/silabs/si91x/mcu/hal/src/sl_si91x_hal_soc_soft_reset.c",
+    "components/device/silabs/si91x/mcu/core/config/rsi_ccp_user_config.h",
+    "components/device/silabs/si91x/mcu/core/common/inc/rsi_debug.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/CMSIS/Driver/Include/Driver_Common.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/CMSIS/Driver/Include/Driver_I2C.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/CMSIS/Driver/Include/Driver_SAI.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/CMSIS/Driver/Include/Driver_SPI.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/CMSIS/Driver/Include/Driver_USART.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/GSPI.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/I2C.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/SAI.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/SPI.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/UDMA.h",
+    "components/device/silabs/si91x/mcu/drivers/cmsis_driver/USART.h",
+    "components/device/silabs/si91x/mcu/hal/inc/sl_si91x_hal_soc_soft_reset.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/aux_reference_volt_config.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_adc.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/clock_update.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_crc.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_ct.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_dac.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_efuse.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_egpio.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_gpdma.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_opamp.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_pwm.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_qspi.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_qspi_proto.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_rng.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_sysrtc.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_sysrtc_headers.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_timers.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_udma.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/rsi_udma_wrapper.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/aux_reference_volt_config.c",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_adc.c",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/inc/sl_si91x_m4_ps.h",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/clock_update.c",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_dac.c",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_pwm.c",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_qspi.c",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_rng.c",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/rsi_sysrtc.c",
+    "components/device/silabs/si91x/mcu/drivers/peripheral_drivers/src/sl_si91x_m4_ps.c",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_packing.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_clks.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_egpio.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_gpdma.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_power_save.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_pwm.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_qspi.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_rng.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_table_si91x.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_timer.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_udma.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_udma_wrapper.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/inc/rsi_rom_ulpss_clk.h",
+    "components/device/silabs/si91x/mcu/drivers/rom_driver/src/rsi_rom_table_si91x.c",
+    "components/device/silabs/si91x/mcu/drivers/service/clock_manager/inc/sl_si91x_clock_manager.h",
+    "components/device/silabs/si91x/mcu/drivers/service/clock_manager/inc/sli_si91x_clock_manager.h",
+    "components/device/silabs/si91x/mcu/drivers/service/clock_manager/src/sl_si91x_clock_manager.c",
+    "components/device/silabs/si91x/mcu/drivers/service/clock_manager/src/sli_si91x_clock_manager.c",
+    "components/device/silabs/si91x/mcu/drivers/service/sleeptimer/src/sl_sleeptimer_hal_si91x_sysrtc.c",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_bod.h",
+    "components/device/silabs/si91x/mcu/drivers/service/power_manager/inc/sl_si91x_power_manager.h",
+    "components/device/silabs/si91x/mcu/drivers/service/power_manager/inc/sli_si91x_power_manager.h",
+    "components/device/silabs/si91x/mcu/drivers/service/power_manager/inc/sli_si91x_power_manager_board_config.h",
+    "components/device/silabs/si91x/mcu/drivers/service/power_manager/src/sl_si91x_power_manager.c",
+    "components/device/silabs/si91x/mcu/drivers/service/power_manager/src/sli_si91x_power_manager.c",
+    "components/device/silabs/si91x/mcu/drivers/service/sl_log/inc/sl_log_helper_si91x.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_ipmu.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_pll.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_power_save.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_processor_sensor.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_reg_spi.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_retention.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_rtc.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_temp_sensor.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_time_period.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_ulpss_clk.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_ds_timer.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/inc/rsi_wwdt.h",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_bod.c",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_ipmu.c",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_pll.c",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_rtc.c",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_temp_sensor.c",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_time_period.c",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_ulpss_clk.c",
+    "components/device/silabs/si91x/mcu/drivers/systemlevel/src/rsi_wwdt.c",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/config/psram_device_config/aps6404l_sqrh/sl_si91x_psram_aps6404l_sqrh_config.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/config/sl_i2s_config/sl_si91x_i2s_config.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/config/sl_si91x_dma_config.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_driver_gpio.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_adc.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_bjt_temperature_sensor.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_calendar.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_dma.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_driver_gpio.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_psram.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_psram_handle.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_pwm.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_calendar.c",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_driver_gpio.c",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_psram.c",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_pwm.c",
+    "components/device/silabs/si91x/mcu/drivers/unified_peripheral_drivers/inc/sl_si91x_gpio_common.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_peripheral_drivers/inc/sl_si91x_gpio.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_peripheral_drivers/inc/sl_si91x_peripheral_gpio.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_peripheral_drivers/src/sl_si91x_peripheral_gpio.c",
+    "components/device/silabs/si91x/wireless/ahb_interface/inc/rsi_m4.h",
+    "components/device/silabs/si91x/wireless/ahb_interface/inc/rsi_os.h",
+    "components/device/silabs/si91x/wireless/ahb_interface/inc/rsi_pkt_mgmt.h",
+    "components/device/silabs/si91x/wireless/ahb_interface/inc/rsi_wisemcu_hardware_setup.h",
+    "components/device/silabs/si91x/wireless/ahb_interface/inc/sl_device.h",
+    "components/device/silabs/si91x/wireless/ahb_interface/inc/sli_siwx917_soc.h",
+    "components/device/silabs/si91x/wireless/ahb_interface/inc/sli_siwx917_timer.h",
+    "components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_i2s.h",
+    "components/device/silabs/si91x/wireless/ahb_interface/src/rsi_hal_mcu_m4_ram.c",
+    "components/device/silabs/si91x/wireless/ahb_interface/src/rsi_hal_mcu_m4_rom.c",
+    "components/device/silabs/si91x/wireless/ahb_interface/src/sli_siwx917_soc.c",
+    "components/device/silabs/si91x/wireless/ahb_interface/src/sl_platform.c",
+    "components/device/silabs/si91x/wireless/ahb_interface/src/sl_platform_wireless.c",
+    "components/device/silabs/si91x/wireless/ahb_interface/src/sl_si91x_bus.c",
+    "components/device/silabs/si91x/wireless/asynchronous_socket/inc/sl_si91x_socket.h",
+    "components/device/silabs/si91x/wireless/asynchronous_socket/src/sl_si91x_socket.c",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_ble_apis.h",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_ble_common_config.h",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_ble.h",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_bt_common_apis.h",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_bt_common_config.h",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_bt_common.h",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_common_apis.h",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_common.h",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_user.h",
+    "components/device/silabs/si91x/wireless/ble/inc/rsi_utils.h",
+    "components/device/silabs/si91x/wireless/ble/inc/sl_si91x_ble.h",
+    "components/device/silabs/si91x/wireless/ble/src/rsi_bt_ble.c",
+    "components/device/silabs/si91x/wireless/ble/src/rsi_common_apis.c",
+    "components/device/silabs/si91x/wireless/ble/src/rsi_utils.c",
+    "components/device/silabs/si91x/wireless/ble/src/sl_si91x_ble.c",
+    "components/device/silabs/si91x/wireless/crypto/aead/inc/sl_si91x_psa_aead.h",
+    "components/device/silabs/si91x/wireless/crypto/aead/src/sl_si91x_psa_aead.c",
+    "components/device/silabs/si91x/wireless/crypto/aes/inc/sl_si91x_aes.h",
+    "components/device/silabs/si91x/wireless/crypto/aes/inc/sl_si91x_psa_aes.h",
+    "components/device/silabs/si91x/wireless/crypto/aes/src/sl_si91x_aes.c",
+    "components/device/silabs/si91x/wireless/crypto/aes/src/sl_si91x_psa_aes.c",
+    "components/device/silabs/si91x/wireless/crypto/attestation/inc/sl_si91x_attestation.h",
+    "components/device/silabs/si91x/wireless/crypto/attestation/src/sl_si91x_attestation.c",
+    "components/device/silabs/si91x/wireless/crypto/ccm/inc/sl_si91x_ccm.h",
+    "components/device/silabs/si91x/wireless/crypto/ccm/src/sl_si91x_ccm.c",
+    "components/device/silabs/si91x/wireless/crypto/chachapoly/inc/sl_si91x_chachapoly.h",
+    "components/device/silabs/si91x/wireless/crypto/chachapoly/src/sl_si91x_chachapoly.c",
+    "components/device/silabs/si91x/wireless/crypto/crypto_utility/inc/sl_si91x_crypto_utility.h",
+    "components/device/silabs/si91x/wireless/crypto/crypto_utility/src/sl_si91x_crypto_utility.c",
+    "components/device/silabs/si91x/wireless/crypto/ecdh/inc/sl_si91x_ecdh.h",
+    "components/device/silabs/si91x/wireless/crypto/ecdh/inc/sl_si91x_psa_ecdh.h",
+    "components/device/silabs/si91x/wireless/crypto/ecdh/src/sl_si91x_ecdh.c",
+    "components/device/silabs/si91x/wireless/crypto/ecdh/src/sl_si91x_psa_ecdh.c",
+    "components/device/silabs/si91x/wireless/crypto/ecdsa/inc/sl_si91x_ecdsa.h",
+    "components/device/silabs/si91x/wireless/crypto/ecdsa/inc/sl_si91x_psa_ecdsa.h",
+    "components/device/silabs/si91x/wireless/crypto/ecdsa/src/sl_si91x_ecdsa.c",
+    "components/device/silabs/si91x/wireless/crypto/ecdsa/src/sl_si91x_psa_ecdsa.c",
+    "components/device/silabs/si91x/wireless/crypto/gcm/inc/sl_si91x_gcm.h",
+    "components/device/silabs/si91x/wireless/crypto/gcm/src/sl_si91x_gcm.c",
+    "components/device/silabs/si91x/wireless/crypto/hmac/inc/sl_si91x_hmac.h",
+    "components/device/silabs/si91x/wireless/crypto/hmac/inc/sl_si91x_psa_hmac.h",
+    "components/device/silabs/si91x/wireless/crypto/hmac/src/sl_si91x_hmac.c",
+    "components/device/silabs/si91x/wireless/crypto/inc/sli_si91x_crypto_driver_functions.h",
+    "components/device/silabs/si91x/wireless/crypto/inc/sl_si91x_crypto.h",
+    "components/device/silabs/si91x/wireless/crypto/mac/inc/sl_si91x_psa_mac.h",
+    "components/device/silabs/si91x/wireless/crypto/mac/src/sl_si91x_psa_mac.c",
+    "components/device/silabs/si91x/wireless/crypto/multithread/inc/sl_si91x_crypto_thread.h",
+    "components/device/silabs/si91x/wireless/crypto/multithread/src/sl_si91x_crypto_thread.c",
+    "components/device/silabs/si91x/wireless/crypto/sha/inc/sl_si91x_psa_sha.h",
+    "components/device/silabs/si91x/wireless/crypto/sha/inc/sl_si91x_sha.h",
+    "components/device/silabs/si91x/wireless/crypto/sha/src/sl_si91x_psa_sha.c",
+    "components/device/silabs/si91x/wireless/crypto/sha/src/sl_si91x_sha.c",
+    "components/device/silabs/si91x/wireless/crypto/src/sli_si91x_crypto_driver_functions.c",
+    "components/device/silabs/si91x/wireless/crypto/trng/inc/sl_si91x_psa_trng.h",
+    "components/device/silabs/si91x/wireless/crypto/trng/inc/sl_si91x_trng.h",
+    "components/device/silabs/si91x/wireless/crypto/trng/src/sl_si91x_psa_trng.c",
+    "components/device/silabs/si91x/wireless/crypto/trng/src/sl_si91x_trng.c",
+    "components/device/silabs/si91x/wireless/crypto/wrap/inc/sl_si91x_psa_wrap.h",
+    "components/device/silabs/si91x/wireless/crypto/wrap/inc/sl_si91x_wrap.h",
+    "components/device/silabs/si91x/wireless/crypto/wrap/src/sl_si91x_psa_wrap.c",
+    "components/device/silabs/si91x/wireless/crypto/wrap/src/sl_si91x_wrap.c",
+    "components/device/silabs/si91x/wireless/firmware_upgrade/firmware_upgradation.c",
+    "components/device/silabs/si91x/wireless/firmware_upgrade/firmware_upgradation.h",
+    "components/device/silabs/si91x/wireless/host_mcu/si91x/siwx917_soc_ncp_host.c",
+    "components/device/silabs/si91x/wireless/inc/sl_rsi_utility.h",
+    "components/device/silabs/si91x/wireless/inc/sl_si91x_constants.h",
+    "components/device/silabs/si91x/wireless/inc/sl_si91x_core_utilities.h",
+    "components/device/silabs/si91x/wireless/inc/sl_si91x_driver.h",
+    "components/device/silabs/si91x/wireless/inc/sl_si91x_host_interface.h",
+    "components/device/silabs/si91x/wireless/inc/sl_si91x_protocol_types.h",
+    "components/device/silabs/si91x/wireless/inc/sl_si91x_status.h",
+    "components/device/silabs/si91x/wireless/inc/sl_si91x_types.h",
+    "components/device/silabs/si91x/wireless/inc/sl_wifi_device.h",
+    "components/device/silabs/si91x/wireless/memory/mem_pool_buffer_quota.c",
+    "components/device/silabs/si91x/wireless/sl_net/inc/sli_net_utility.h",
+    "components/device/silabs/si91x/wireless/sl_net/inc/sl_net_si91x.h",
+    "components/device/silabs/si91x/wireless/sl_net/inc/sl_net_si91x_integration_handler.h",
+    "components/device/silabs/si91x/wireless/sl_net/src/sli_net_si91x_utility.c",
+    "components/device/silabs/si91x/wireless/sl_net/src/sl_net_rsi_utility.c",
+    "components/device/silabs/si91x/wireless/sl_net/src/sl_net_si91x_callback_framework.c",
+    "components/device/silabs/si91x/wireless/sl_net/src/sl_net_si91x_integration_handler.c",
+    "components/device/silabs/si91x/wireless/sl_net/src/sl_si91x_net_internal_stack.c",
+    "components/device/silabs/si91x/wireless/socket/inc/sl_bsd_utility.h",
+    "components/device/silabs/si91x/wireless/socket/inc/sl_si91x_socket_callback_framework.h",
+    "components/device/silabs/si91x/wireless/socket/inc/sl_si91x_socket_constants.h",
+    "components/device/silabs/si91x/wireless/socket/inc/sl_si91x_socket_types.h",
+    "components/device/silabs/si91x/wireless/socket/inc/sl_si91x_socket_utility.h",
+    "components/device/silabs/si91x/wireless/socket/src/sl_si91x_socket_utility.c",
+    "components/device/silabs/si91x/wireless/src/sl_rsi_utility.c",
+    "components/device/silabs/si91x/wireless/src/sl_si91x_driver.c",
+    "components/device/silabs/si91x/wireless/src/sli_wifi_memory_manager.c",
+    "components/device/silabs/si91x/wireless/src/sli_wifi_power_profile.c",
+    "components/protocol/wifi/inc/sli_wifi_callback_framework.h",
+    "components/protocol/wifi/inc/sl_wifi_callback_framework.h",
+    "components/protocol/wifi/inc/sl_wifi_constants.h",
+    "components/protocol/wifi/inc/sl_wifi_credentials.h",
+    "components/protocol/wifi/inc/sl_wifi.h",
+    "components/protocol/wifi/inc/sl_wifi_host_interface.h",
+    "components/protocol/wifi/inc/sl_wifi_types.h",
+    "components/protocol/wifi/si91x/sl_wifi.c",
+    "components/protocol/wifi/src/sl_wifi_basic_credentials.c",
+    "components/protocol/wifi/src/sl_wifi_callback_framework.c",
+    "components/protocol/wifi/src/sli_wifi_callback_framework.c",
+    "components/service/bsd_socket/si91x_socket/sl_si91x_socket_support.h",
+    "components/service/network_manager/inc/sli_net_types.h",
+    "components/service/network_manager/inc/sli_net_common_utility.h",
+    "components/service/network_manager/inc/sli_net_constants.h",
+    "components/service/network_manager/inc/sl_net_constants.h",
+    "components/service/network_manager/inc/sl_net_dns.h",
+    "components/service/network_manager/inc/sl_net.h",
+    "components/service/network_manager/inc/sl_net_ip_types.h",
+    "components/service/network_manager/inc/sl_net_types.h",
+    "components/service/network_manager/inc/sl_net_wifi_types.h",
+    "components/service/network_manager/src/sli_net_common_utility.c",
+    "components/service/network_manager/src/sl_net_basic_profiles.c",
+    "components/service/network_manager/src/sl_net_credentials.c",
+    "components/sli_buffer_manager/inc/sli_buffer_manager.h",
+    "components/sli_buffer_manager/inc/sli_buffer_manager_types.h",
+    "components/sli_si91x_wifi_event_handler/src/sli_si91x_wifi_event_handler.c",
+    "components/sli_wifi_command_engine/inc/sli_wifi_command_engine.h",
+    "components/sli_wifi_command_engine/inc/sli_wifi_event_handler.h",
+    "components/sli_wifi_command_engine/src/sli_wifi_command_engine.c",
+    "components/sli_wifi/inc/sli_wifi_constants.h",
+    "components/sli_wifi/inc/sli_wifi.h",
+    "components/sli_wifi/inc/sli_wifi_memory_manager.h",
+    "components/sli_wifi/inc/sli_wifi_power_profile.h",
+    "components/sli_wifi/inc/sli_wifi_types.h",
+    "components/sli_wifi/inc/sli_wifi_utility.h",
+    "components/sli_wifi/src/sli_wifi.c",
+    "components/sli_wifi/src/sli_wifi_utility.c",
+    "resources/defaults/sl_net_default_values.h",
+    "resources/defaults/sl_wifi_region_db_config.h",
+]
+
+# Let's configure the YAML parser one time for all the requests.
+YAML = yaml.YAML(typ='rt')
+YAML.default_flow_style = False
+YAML.indent(mapping=2, sequence=4, offset=2)
+YAML.preserve_quotes = True
+YAML.width = 1024
+YAML.boolean_representation = ['False', 'True']
+
+def copy_files(src: Path, dst: Path, paths: list[str]) -> None:
+    for path in paths:
+        srcfiles = list(src.glob(path))
+        if not srcfiles:
+            print(f"Invalid path: {os.path.join(src, path)}")
+        for f in srcfiles:
+            destfile = dst / f.relative_to(src)
+            if os.path.exists(destfile):
+                continue
+            print(f"Import {f.relative_to(src)}")
+            destfile.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(f, destfile)
+
+def get_nwp_fw(src: Path) -> tuple[Path, re.Match]:
+    fwfiles = list(src.glob("connectivity_firmware/standard/*.rps"))
+    if len(fwfiles) == 0:
+        raise FileNotFoundError(f"No NWP firmware found in {src}/connectivity_firmware/standard/")
+    if len(fwfiles) > 1:
+        raise ValueError(f"Multiple NWP firmware files found in {src}/connectivity_firmware/standard/")
+    matches = re.search(r"(\w+)\.(\d+)\.(\d+)\.(\d+)\.(\d+)\.(\d+)\.(\d+)", str(fwfiles[0]))
+    if not matches:
+        raise ValueError(f"Firmware does not match pattern: {fwfiles[0]}")
+    return fwfiles[0], matches
+
+def get_module_yaml(src: Path, dst: Path, fw: Path) -> dict:
+    parent_dst = dst.parents[0]
+    module_yml = parent_dst / "zephyr" / "module.yml"
+    if not module_yml.exists():
+        raise FileNotFoundError(f"Module YAML file not found: {module_yml}")
+    data = YAML.load(module_yml)
+    if not data.get('blobs'):
+        raise ValueError(f"No 'blobs' section found in {module_yml}")
+
+    fw_blob = None
+    for blob in data.get('blobs'):
+        if not re.match(r".*connectivity_firmware/standard/.*\.rps", blob["path"]):
+            continue
+        if fw_blob:
+            raise ValueError(f"Multiple NWP firmware blobs found in {module_yml}")
+        fw_blob = blob
+        matches = re.match(r".*/raw/", fw_blob["url"])
+        if not matches:
+            raise ValueError(f"Blob URL firmware does not match pattern: {blob['url']}")
+        fw_blob["url"] = f"{matches[0]}/X.Y.Z/{fw.relative_to(src)}"
+        fw_blob["path"] = f"{dst.relative_to(parent_dst)}/{fw.relative_to(src)}"
+        fw_blob["sha256"] = hashlib.sha256(fw.read_bytes()).hexdigest()
+        fw_blob["version"] = "X.Y.Z"
+    if not fw_blob:
+        raise ValueError(f"No NWP firmware blob found in {module_yml}")
+    return dict(fw_blob)
+
+def update_nwp_fw_version(src: Path, dst: Path) -> None:
+    fw, matches = get_nwp_fw(src)
+
+    print(textwrap.dedent(f"""
+        Firmware associated to this version is {matches[0]}:
+            .rom_id = 0x{int(matches[1], 16):02X},
+            .major = {int(matches[2])},
+            .minor = {int(matches[3])},
+            .security_version = {int(matches[4])},
+            .patch_num = {int(matches[5])},
+            .customer_id = {int(matches[6])},
+            .build_num = {int(matches[7])},
+        """))
+
+    blob = get_module_yaml(src, dst, fw)
+
+    stream = io.StringIO()
+    YAML.dump(blob, stream)
+    print(f"Template for \"zephyr/module.yml\":")
+    print(textwrap.indent(stream.getvalue().strip(), '    '))
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("sdk", type=Path,
+                        help="Source WiseConnect directory")
+    parser.add_argument("--dest", "-d", type=Path,
+                        help="store the result somewhere else than \"wiseconnect/\" directory")
+    parser.add_argument("--overwrite", "-f", action="store_true",
+                        help="Remove DEST before to continue")
+    args = parser.parse_args()
+
+    if args.dest:
+        dst = args.dest
+    else:
+        dst = (Path(__file__).parent.parent / "wiseconnect").resolve()
+
+    if args.overwrite:
+        shutil.rmtree(dst)
+    copy_files(args.sdk, dst, paths)
+    try:
+        update_nwp_fw_version(args.sdk, dst)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"Warning: {e}")

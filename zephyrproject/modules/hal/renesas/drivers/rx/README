@@ -1,0 +1,127 @@
+Firmware Integration Technology (FIT)
+#####################################
+
+Origin:
+   Renesas Electronics Corporation
+   https://www.renesas.com/us/en/software-tool/fit
+
+Status:
+   version v1.47
+
+Purpose:
+   Firmware Integration Technology (FIT) for Renesas RX MCU Family.
+
+Description:
+   This package is a snapshot from the RX FIT software released by Renesas Electronics Corporation
+   It contain the HAL and a set of CMSIS headers files for the Renesas RX MCUs
+
+Dependencies:
+   None.
+
+URL:
+   https://github.com/renesas/rx-driver-package
+
+Commit:
+   2fdeaa013e81e2288de4d92b8ef05a0a89edb964
+
+Maintained-by:
+   Renesas Electronics Corporation
+
+License:
+   BSD-3-Clause
+
+License Link:
+   https://opensource.org/licenses/BSD-3-Clause
+
+Patch List:
+
+   * Remove unused includes in r_bsp.h
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/board/generic_rx261/r_bsp.h
+      drivers/rx/rdp/src/r_bsp/board/generic_rx130/r_bsp.h
+      drivers/rx/rdp/src/r_bsp/board/generic_rx26t/r_bsp.h
+      drivers/rx/rdp/src/r_bsp/board/generic_rx14t/r_bsp.h
+
+   * Remove the static definition in Flash driver
+   Impacted files:
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.c
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.h
+
+   * Fix build warnings in Flash driver
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_rx_compiler.h
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_group.c
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.h
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.c
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_rx.c
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_rx.h
+
+   * Fix the build warnings in RSPI driver
+   Impacted files:
+      drivers/rx/rdp/src/r_rspi_rx/src/r_rspi_rx_private.h
+
+   * Remove the static definition in RIIC driver
+   Impacted files:
+      drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
+      drivers/rx/rdp/src/r_riic_rx/r_riic_rx_if.h
+
+   * Fix the build warnings in RIIC driver
+   Impacted files:
+      drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
+
+   * Replace the __builtin_rx_xchg with actual implementation
+   because Zephyr SDK hasn't support it yet
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_rx_intrinsic_functions.h
+
+   * Remove the static definition in LVD isr function
+   Impacted files:
+      drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
+      drivers/rx/rdp/src/r_lvd_rx/r_lvd_rx_if.h
+      drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx.c
+
+   * Fix the build warnings in LVD driver
+   Impacted files:
+      drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
+
+   * Made the group interrupt handler a global variable.
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_bsp_interrupts.c
+      drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_interrupts.c
+
+   * Added a new function based on R_BSP_InterruptWrite
+   that allows passing a user-defined argument to the registered interrupt handler.
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_bsp_interrupts.c
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_bsp_interrupts.h
+      drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_interrupts.c
+      drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_interrupts.h
+
+   * Fix implicit conversion build warnings
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_clocks.c
+      drivers/rx/rdp/src/r_sci_rx/src/targets/rx26t/r_sci_rx26t.c
+      drivers/rx/rdp/src/r_sci_rx/src/targets/rx140/r_sci_rx140.c
+
+   * Add the header file <stdint.h>
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/rx130/mcu_clocks.h
+
+   * Remove unsed variables to fix build warnings
+   Impacted files:
+      drivers/rx/rdp/src/r_s12ad_rx/src/targets/rx261/r_s12ad_rx261.c
+      drivers/rx/rdp/src/r_s12ad_rx/src/targets/rx140/r_s12ad_rx140.c
+
+   * Remove unnecessary include header files
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/board/generic_rx140/r_bsp.h
+
+   * Fix implicit conversion build warnings
+   Impacted files:
+      drivers/rx/rdp/src/r_sci_rx/src/targets/rx140/r_sci_rx14t.c
+
+   * Rename marco definition for code flash block size
+   Impacted files:
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_fcu.c
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_group.c
+      drivers/rx/rdp/src/r_flash_rx/src/targets/rx26t/r_flash_rx26t.h

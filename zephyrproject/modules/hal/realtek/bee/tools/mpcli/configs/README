@@ -1,0 +1,5 @@
+# Realtek MPCli Tool Configuration Files
+
+This directory contains configuration files required for flashing **essential system images** (such as Bootloader patches, System patches, and Configuration files) to Realtek Bee series SoCs using the Realtek MPCli tool integration in Zephyr.
+
+These JSON files are used by the `west flash` command to define the memory layout and the location of the binary blobs.

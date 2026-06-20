@@ -1,0 +1,3 @@
+add_subdirectory(common)
+add_subdirectory_ifdef(CONFIG_SOC_FAMILY_ATMEL_SAM sam)
+add_subdirectory_ifdef(CONFIG_SOC_FAMILY_ATMEL_SAM0 sam0)

@@ -1,0 +1,18 @@
+# Copyright (c) 2026, Realtek Semiconductor Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+config REALTEK_BEE_AON_WDT
+	bool "Realtek Bee MCU aon watchdog timer"
+	default n
+
+	help
+	  This option enables the aon wdt driver for Realtek Bee family of
+	  processors.
+
+config REALTEK_BEE_CORE_WDT
+	bool "Realtek Bee MCU core watchdog timer"
+	default n
+
+	help
+	  This option enables the core wdt driver for Realtek Bee family of
+	  processors.

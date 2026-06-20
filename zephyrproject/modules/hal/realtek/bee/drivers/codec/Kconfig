@@ -1,0 +1,13 @@
+# Copyright (c) 2026, Realtek Semiconductor Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+config REALTEK_BEE_CODEC
+	bool "Realtek Bee MCU codec driver"
+	default n
+
+	select REALTEK_BEE_RCC
+	select REALTEK_BEE_PINMUX
+	select REALTEK_BEE_NVIC
+
+	help
+	  This option enables the codec driver for Realtek Bee MCU.

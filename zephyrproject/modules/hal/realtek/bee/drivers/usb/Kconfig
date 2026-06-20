@@ -1,0 +1,12 @@
+# Copyright (c) 2026, Realtek Semiconductor Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+config REALTEK_BEE_USB
+	bool "Realtek Bee MCU usb driver"
+	default n
+
+config REALTEK_BEE_USING_USB_HAL
+	bool "Realtek Bee usb hal library"
+	default y if REALTEK_BEE_USB
+	help
+		This option enables the usb hal library for Realtek Bee MCU.
