@@ -10,6 +10,7 @@ cva6/verif/tests/
 *.elf
 *.o
 *.d
+a.out
 build/
 riscv-toolchain/
 riscv-openocd/
