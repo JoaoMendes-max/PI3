@@ -3,8 +3,8 @@
 Projeto Integrador em Engenharia Eletrónica Industrial e Computadores (PI3)
 Universidade do Minho, Mestrado em Engenharia Eletrónica Industrial e Computadores, Braga, junho de 2026.
 
-**Autores:** João Mendes (PG60206), Luís Cunha, Manuel Rodriguez
-**Orientadores:** Tiago Gomes, Tiago Oliveira
+**Autores:** João Mendes ,Tiago Oliveira
+**Orientadores:** Luís Cunha, Manuel Rodriguez Tiago Gomes 
 
 > Relatório completo: [`docs/MEMGUARD_Relatorio.pdf`](docs/MEMGUARD_Relatorio.pdf). Proposta: [`docs/MEMGUARD_Proposta.pdf`](docs/MEMGUARD_Proposta.pdf).
 
