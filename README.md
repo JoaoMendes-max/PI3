@@ -1,7 +1,7 @@
 # MEMGUARD: Memory Security in RISC-V Systems
 
 Integrative Project in Industrial Electronic Engineering and Computers (PI3)
-University of Minho, Master in Industrial Electronic Engineering and Computers, Braga, June 2026.
+University of Minho, Master in Industrial Electronic Engineering and Computers
 
 Authors: João Mendes, Tiago Oliveira
 Supervisors: Luís Cunha, Manuel Rodrigues, Tiago Gomes
