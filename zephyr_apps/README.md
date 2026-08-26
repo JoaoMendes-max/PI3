@@ -1,104 +1,25 @@
-# Aplicações Zephyr: isolamento por U-Mode + PMP
+Zephyr Applications: isolated by U-Mode + PMP
 
-Aplicações Zephyr para o CVA6 (RV32IMAC, Sv32) que demonstram o **isolamento de memória nativo** do
-Zephyr em RISC-V. Todas as *tasks* correm em **U-Mode** (flag `K_USER`), cada uma com uma entrada PMP
-dedicada à sua *stack*. Qualquer acesso fora da região autorizada gera um **`Store Access Fault`
-(`mcause=0x7`)** e o sistema para de forma controlada, registando a causa e o endereço.
+Zephyr applications for CVA6 (RV32IMAC, Sv32) that demonstrate native isolation on Zephyr with RISC-V. The demos show memory-safety tasks for Zephyr under RISC-V, using U-Mode + PMP (flag `K_USER`), and provide an example of a user-space application that uses an isolated stack. The Store Access Fault mechanism is used to show illegal accesses.
 
-Estas demos são a contraparte "com proteção" das demos em M-Mode do FreeRTOS:
-[`../FreeRTOS/demos_seguranca/`](../FreeRTOS/demos_seguranca).
+These demos are intended to complement the FreeRTOS demos. See `../FreeRTOS/demos_seguranca/` for the FreeRTOS versions.
 
-## Estrutura
+Getting started
 
-```
-zephyr_apps/
-├── two_tasks/            exemplo base: duas tasks em U-Mode que imprimem o seu modo de privilégio
-└── demos_seguranca/      demos de ataque (espelham as do FreeRTOS) + testes do bug RTL do PMP
-```
+- The zephyr_apps directory includes `two_tasks/` (example base: two tasks in U-Mode that attempt privileged operations) and `demos_seguranca/` with security-related demos and tests.
+- To compile Zephyr demos you may need a basic `CMakeLists.txt` and toolchain setup for the CVA6/Cores that you use. The repo includes example build instructions and references to how to integrate these demos with a local bare-metal boot environment or an emulator.
 
-## Como construir e escolher a aplicação
+How to construct and run an app
 
-Cada pasta é um projeto Zephyr autónomo. A demo a compilar é escolhida no `CMakeLists.txt`, na linha
-`target_sources(app PRIVATE src/<ficheiro>.c)`. Só **um** ficheiro `main_*` ou `test_*` é compilado de
-cada vez, porque cada um define as suas próprias *threads* (via `K_THREAD_DEFINE` ou `main()`).
+- There is guidance for creating a Zephyr project and linking in the Store Access Fault handler to demonstrate illegal memory access traps (configured via PMP or kernel configuration).
+- Many demos require board-specific configuration (`board_name`) and a basic UART/console configuration for observing output.
 
-```bash
-# com o ambiente Zephyr ativo e a board CVA6 configurada
-west build -b <board_cva6> zephyr_apps/demos_seguranca
-```
+Notes and configuration warnings
 
-### Notas de configuração (`prj.conf`)
+- Some settings in `prj.conf` and `K_USER`/PMP configuration are required for proper isolation; ensure PMP regions are set up per-task and that the kernel is kept outside user-accessible ranges.
+- Examples show how to enable Store Access Fault and configure the system to reboot or halt upon faults — check the demo notes for each example.
 
-- `CONFIG_USERSPACE=y`: ativa o U-Mode e o PMP por *task*. É a base de todo o isolamento.
-- `CONFIG_PMP_UNLOCK_ROM_FOR_DEBUG=y`: no CVA6, uma entrada PMP com TOR+Lock bloqueia leituras em
-  M-Mode mesmo com o bit R ativo. Esta opção remove o *lock* da ROM para permitir depuração.
-- `CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC`: o MTIME no APU do CVA6 corre ao ritmo do RTC, não do CPU
-  clock (ver `two_tasks/prj.conf`).
+Tests and developer notes
 
----
-
-## `two_tasks/`: exemplo base
-
-Duas *tasks* (`task_a`, `task_b`) em U-Mode que, em ciclo, imprimem o seu nível de privilégio lendo o
-campo MPP do `mstatus`. Não é um ataque: serve de *sanity check* para confirmar que as *tasks* arrancam
-mesmo em U-Mode e que o isolamento base está montado. Os ficheiros `iti.traces` e `encaps.traces` são
-saídas de *tracing* capturadas durante a execução.
-
----
-
-## `demos_seguranca/`: ataques e testes
-
-### Demos de ataque
-
-Cada demo cria uma *task* legítima (Task A) e uma *task* adversária (Task Adv). Em todos os casos, a
-escrita ilegal da Task Adv é bloqueada pelo PMP e a Task A não é afetada.
-
-- **`main_z_attack1_hijack.c`, desvio de fluxo de controlo.**
-  A Task Adv tenta alterar uma flag global do kernel e depois chamar a função da Task A como se fosse
-  sua, forçando a execução de código não autorizado. Serve para mostrar que a primeira escrita (na flag,
-  que está no espaço do kernel) já dispara `Store Access Fault`, pelo que o desvio nunca chega a acontecer.
-
-- **`main_z_attack2_stack.c`, escrita na *stack* de outra *task*.**
-  A Task A guarda uma *password* na sua *stack* e publica o endereço numa partição partilhada (a simular
-  um registo de *debug* deixado exposto). A Task Adv lê esse endereço e tenta escrever lá. Serve para
-  mostrar que uma variável local **não** está protegida só por estar na *stack*: o PMP dá uma entrada
-  exclusiva por *task*, e o acesso da Adv gera `Store Access Fault` com a *password* intacta.
-
-- **`main_z_attack3_global.c`, escrita em variável global do kernel.**
-  A Task Adv escreve diretamente numa variável global da Task A, referenciada por símbolo (sem precisar
-  de endereço exposto). Serve para mostrar que a memória global do kernel está fora do alcance de uma
-  *task* em U-Mode: a escrita gera `Store Access Fault`.
-
-- **`main_z_attack4_tcb.c`, corrupção do TCB.**
-  A Task Adv obtém a referência para o `struct k_thread` (o bloco de controlo) da Task A e tenta escrever
-  no primeiro campo (o *stack pointer*), o alvo de maior dano por ser o estado de que o *scheduler*
-  depende. Serve para mostrar que mesmo as estruturas internas do kernel estão protegidas: `Store Access
-  Fault` antes de qualquer corrupção.
-
-- **`main_z_bug_acidental.c`, bug acidental (sem intenção maliciosa).**
-  Uma *task* declara `char config[8]` mas, por erro de constante, percorre 512 iterações a escrever fora
-  dos limites. Serve para mostrar que o isolamento protege também contra erros honestos de programação: o
-  PMP corta a escrita assim que ela passa a região da *stack*, contendo o bug nessa *task* sem afetar a
-  Task A.
-
-- **`demo_fpga_pwm.c`, demonstração física com motor.**
-  A Task Motor mantém o `pwm_duty` (velocidade) na sua *stack* e gera o PWM num pino GPIO. A Task Adv,
-  ao carregar no *switch* SW0, tenta corromper o `pwm_duty`. Serve para tornar o ataque visível num
-  atuador real: no Zephyr o PMP gera `Store Access Fault` e o valor legítimo da velocidade é preservado.
-
-### Testes do bug RTL do PMP
-
-Estes ficheiros foram escritos para **diagnosticar** a anomalia da Secção 5.2 do relatório (*stores*
-ilegais a serem reportados como `Load Access Fault`). Ficam documentados pelo valor de verificação:
-
-- **`test_lw_no_entry.c`** (Teste 1): `lw` de uma região sem entrada PMP. *Baseline* de confirmação,
-  deve dar `mcause=0x5` (Load access fault).
-- **`test_sw_no_entry.c`** (Teste 2): `sw` para uma região sem entrada PMP. Deve dar `mcause=0x7`
-  (Store), mas **dava `0x5` antes da correção**, que foi a pista chave para o bug.
-- **`test_sw_has_entry.c`** (Teste 3): `sw` para o `.text` (entrada PMP `R|X`, sem `W`). Distingue o
-  caminho "sem *match*" do caminho "*match* com permissão errada"; ambos devem dar `mcause=0x7`.
-- **`main_z_test_stores.c`**: sequência de `sw` no mesmo endereço protegido, para forçar `mcause=0x7`.
-- **`main_z_teste_false_store.c`**: `sw` para vários endereços proibidos do kernel, para confirmar que o
-  `mepc` aponta a instrução certa.
-- **`main_z_test_nop.c`**: `sw` com NOPs antes, que quebram o RAW *hazard*, para isolar entre a teoria do
-  *scoreboard* e a do *hazard* como origem da dessincronização.
+- The repository includes simple test programs that reproduce RTM/Store Access Fault behaviors and confirm the platform configuration results (basic tests for illegal accesses, PMP-triggered faults, etc.).
+- Follow the README inside each demo directory for build and run instructions per-target board/emulator.
