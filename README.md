@@ -4,7 +4,7 @@ Projeto Integrador em Engenharia Eletrónica Industrial e Computadores (PI3), Un
 
 Authors: João Mendes, Tiago Oliveira. Advisors: Luís Cunha, Manuel Rodriguez, Tiago Gomes.
 
-Full report: docs/MEMGUARD_Relatorio.pdf Proposal: docs/MEMGUARD_Proposta.pdf
+Full report: [docs/MEMGUARD_Relatorio.pdf](docs/MEMGUARD_Relatorio.pdf) Proposal: [docs/MEMGUARD_Proposta.pdf](docs/MEMGUARD_Proposta.pdf) 
 
 ## What the project is
 
